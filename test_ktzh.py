@@ -36,10 +36,7 @@ async def get_ktzh_trains(
             print("Success:", response.status_code)
             
             parsed = BeautifulSoup(response.text, 'html.parser') 
-            
-            train_cards = parsed.select("table.table tr")
-            print(f"Found: {len(train_cards)}")
-            
+        
             with open("ktzh_direct_result.html", "w", encoding="utf-8") as f:
                 f.write(response.text)
                     

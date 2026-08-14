@@ -1,0 +1,30 @@
+{
+    "total_records": 5,
+    "tickets": [
+        {
+            "car_type": "Купе",
+            "free_seats": "2",
+            "price": "14 513 ₸"
+        },
+        {
+            "car_type": "Купе",
+            "free_seats": "4",
+            "price": "26 739 ₸"
+        },
+        {
+            "car_type": "Купе",
+            "free_seats": "1",
+            "price": "23 315 ₸"
+        },
+        {
+            "car_type": "Плацкарт",
+            "free_seats": "1",
+            "price": "12 441 ₸"
+        },
+        {
+            "car_type": "Купе",
+            "free_seats": "1",
+            "price": "35 372 ₸"
+        }
+    ]
+}
