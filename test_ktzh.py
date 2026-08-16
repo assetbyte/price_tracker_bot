@@ -1,11 +1,12 @@
 import asyncio
 from bs4 import BeautifulSoup
 import httpx
+from parse_result import parse_html_to_json
 
 async def get_ktzh_trains(
     departure_code="2708001", 
     arrival_code="2700000", 
-    departure_date="18-08-2026, втр"
+    departure_date="20-08-2026, чтв"
 ):
     url = "https://bilet.railways.kz/sale/default/route/search"
     
@@ -27,25 +28,24 @@ async def get_ktzh_trains(
     }
     
     print("Sending request...")
+    data = None
     
-    async with httpx.AsyncClient(headers=headers, follow_redirects=True, timeout=20) as client:
+    async with httpx.AsyncClient(headers=headers, follow_redirects=True, timeout=40) as client:
         try: 
             response = await client.get(url, params=params)
+            
             response.raise_for_status() 
             
             print("Success:", response.status_code)
             
-            parsed = BeautifulSoup(response.text, 'html.parser') 
         
-            with open("ktzh_direct_result.html", "w", encoding="utf-8") as f:
-                f.write(response.text)
-                    
-            return response.text
+            data = parse_html_to_json(response.text)
         
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error type: {type(e).__name__}")
+            print(f"Error details: {repr(e)}")
             
-    return None
+    return data
 
 if __name__ == "__main__":
     asyncio.run(get_ktzh_trains())
@@ -54,3 +54,5 @@ if __name__ == "__main__":
     
     
   
+
+

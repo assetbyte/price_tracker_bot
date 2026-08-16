@@ -1,11 +1,34 @@
 import json
 from bs4 import BeautifulSoup
 
-def parse_html_to_json(html_file_path="ktzh_direct_result.html", output_json_path="ktzh_trains.json"):
-    with open(html_file_path, "r", encoding="utf-8") as f:
-        html = f.read()
 
-    soup = BeautifulSoup(html, "html.parser")
+
+def clean_int(value):
+    result = ""
+    for char in value:
+        if char.isdigit():
+            result+= char
+            
+    return int(result) if result else 0
+
+def parse_html_to_json(html_content=None, output_json_path="ktzh_trains.json"):
+    
+    if html_content is None:
+        with open("ktzh_direct_result.html", "r", encoding="utf-8") as f:
+            html_content= f.read()
+
+
+    soup = BeautifulSoup(html_content, "html.parser")
+    
+    early_return = soup.select(".ui.warning.message")
+    if early_return:
+        print("На выбранные даты еще нет билетов!")
+        return {
+            "total_records": 0,
+            "tickets": []
+        }
+    
+    
     rows = soup.select("tr")
 
     trains_data = []
@@ -29,8 +52,8 @@ def parse_html_to_json(html_file_path="ktzh_direct_result.html", output_json_pat
             
             car_info = {
                 "car_type": car_type,
-                "free_seats": free_seats,
-                "price": price
+                "free_seats": clean_int(free_seats),
+                "price": clean_int(price)
             }
 
             trains_data.append(car_info)
