@@ -8,10 +8,12 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     telegram_id BIGINT UNIQUE  NULL,
     username VARCHAR(255),
+    password_hash VARCHAR(255),
     first_name VARCHAR(255),
     last_name VARCHAR(255),
     email VARCHAR(255) UNIQUE,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    preferred_notification VARCHAR(50) DEFAULT 'telegram'
 );
 ```
 
@@ -23,10 +25,13 @@ Saves the tracking information about active and inactive trackings about prices 
 CREATE TABLE trackings (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
-    origin VARCHAR(255) NOT NULL,
-    destination VARCHAR(255) NOT NULL,
+    origin_code VARCHAR(50) NOT NULL,
+    destination_code VARCHAR(50) NOT NULL,
+    origin_name VARCHAR(255) NOT NULL,
+    destination_name VARCHAR(255) NOT NULL,
     departure_date DATE NOT NULL,
     target_price DECIMAL(10, 2) NOT NULL,
+    car_type VARCHAR(50) NULL, -- отслеживание цен любого типа [Купейка, Сидячий, Плацкарт, Люкс]
     transport_type VARCHAR(50) NOT NULL,
     route VARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
@@ -37,7 +42,7 @@ CREATE TABLE trackings (
 
 
 -- INDEX FOR DEDUPLICATION IN Celery 
-CREATE UNIQUE INDEX idx_unique_tracking ON trackings(user_id, origin, destination, departure_date, transport_type)
+CREATE UNIQUE INDEX idx_unique_tracking ON trackings(user_id, origin_code, destination_code, departure_date, transport_type)
 WHERE is_active = TRUE;
 ```
 
