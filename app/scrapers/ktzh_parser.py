@@ -12,7 +12,6 @@ def clean_int(value):
     return int(result) if result else 0
 
 def parse_html_to_json(html_content=None, output_json_path="ktzh_trains.json"):
-    
     if html_content is None:
         with open("ktzh_direct_result.html", "r", encoding="utf-8") as f:
             html_content= f.read()

@@ -4,3 +4,11 @@ venv/
 __pycache__/
 .pytest_cache/
 *.html
+ktzh_trains.json
+
+.vscode/
+.idea/
+.DS_Store
+
+*.log
+*.sqlite3
