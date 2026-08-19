@@ -10,7 +10,7 @@ async def get_price_history(
     result = await session.execute(
         select(PriceHistory).where(
             PriceHistory.tracking_id == tracking_id
-        )
+        ).order_by(PriceHistory.recorded_at.asc())
     )
     
     return result.scalars().all() 
