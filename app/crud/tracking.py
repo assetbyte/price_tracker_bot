@@ -70,3 +70,16 @@ async def get_all_active_trackings(
         )
     )
     return result.scalars().all()
+
+
+async def get_user_active_trackings(
+    session: AsyncSession,
+    user_id: int
+) -> list[Tracking]:
+    result = await session.execute(
+        select(Tracking).where(
+            Tracking.user_id == user_id,
+            Tracking.is_active.is_(True)
+        )
+    )
+    return result.scalars().all()
