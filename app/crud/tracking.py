@@ -83,3 +83,22 @@ async def get_user_active_trackings(
         )
     )
     return result.scalars().all()
+
+
+async def deactivate_tracking(
+    session: AsyncSession,
+    tracking_id: int,
+    user_id: int,
+) -> bool:
+    result = await session.execute(
+        select(Tracking).where(
+            Tracking.id == tracking_id,
+            Tracking.user_id == user_id
+        )
+    )
+    tracking = result.scalar_one_or_none()
+    if tracking:
+        tracking.is_active = False
+        await session.commit()
+        return True
+    return False
