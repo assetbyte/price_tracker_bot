@@ -59,3 +59,14 @@ async def create_tracking(
     await session.refresh(new_tracking)
 
     return new_tracking
+
+
+async def get_all_active_trackings(
+    session: AsyncSession
+) -> list[Tracking]:
+    result = await session.execute(
+        select(Tracking).where(
+            Tracking.is_active.is_(True)
+        )
+    )
+    return result.scalars().all()
