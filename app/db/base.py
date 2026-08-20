@@ -3,7 +3,7 @@ from decimal import Decimal
 from typing import Optional, Any
 
 from sqlalchemy import (
-    BigInteger, Integer, String, Numeric, Boolean, Date, ForeignKey, Index, func
+    BigInteger, Integer, String, Numeric, Boolean, Date, ForeignKey, Index, func, text
 )
 from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
@@ -96,5 +96,5 @@ class PriceHistory(Base):
     tracking: Mapped["Tracking"] = relationship("Tracking", back_populates="price_history") # связывание с отслеживанием, к которому относится данная запись истории цен
 
     __table_args__ = (
-        Index("idx_price_history_tracking_id", "tracking_id", time.desc()),
+        Index("idx_price_history_tracking_time", "tracking_id", text("time DESC")),
     )
