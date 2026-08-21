@@ -48,7 +48,7 @@ class Tracking(Base):
     destination_name: Mapped[str] = mapped_column(String(255), nullable=False)
     departure_date: Mapped[date] = mapped_column(Date, nullable=False)
     target_price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
-    car_type: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    car_type: Mapped[Optional[str]] = mapped_column(String(50), nullable=True) # тип вагона/класса
     transport_type: Mapped[str] = mapped_column(String(50), nullable=False)
     route: Mapped[str] = mapped_column(String(255), nullable=False)
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)

@@ -6,7 +6,7 @@ from ktzh_parser import parse_html_to_json
 async def get_ktzh_trains(
     departure_code="2708001", 
     arrival_code="2700000", 
-    departure_date="20-08-2026, чтв"
+    departure_date="27-08-2026, чтв"
 ):
     url = "https://bilet.railways.kz/sale/default/route/search"
     
