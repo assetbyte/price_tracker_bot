@@ -1,7 +1,7 @@
 import asyncio
 from bs4 import BeautifulSoup
 import httpx
-from ktzh_parser import parse_html_to_json
+from app.scrapers.ktzh_parser import parse_html_to_json
 
 async def get_ktzh_trains(
     departure_code="2708001", 

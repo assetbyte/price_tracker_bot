@@ -27,3 +27,5 @@ async def get_latest_price_record(
         .limit(1)
     )
     return result.scalar_one_or_none()
+
+

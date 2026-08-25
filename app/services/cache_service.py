@@ -2,7 +2,7 @@ import json
 from typing import Any, Dict, Optional
 
 from app.db.redis import redis_client
-from scrapers.ktzh_client import get_ktzh_trains
+from app.scrapers.ktzh_client import get_ktzh_trains
 
 
 CACHE_EXPIRE_SECONDS = 900 #15 minutes
@@ -39,7 +39,7 @@ async def get_cache_ktzh_trains(
         await redis_client.set(
             name=cache_key,
             value=json.dumps(parsed_data, ensure_ascii=False),
-            expire=CACHE_EXPIRE_SECONDS
+            ex=CACHE_EXPIRE_SECONDS
         )
     except Exception as e:
         print(f"Error {e}")

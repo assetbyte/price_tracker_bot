@@ -2,15 +2,16 @@
 from datetime import date
 from decimal import Decimal
 from typing import Optional
-from app.services.cache_serivce import get_cache_ktzh_trains
+from app.services.cache_service import get_cache_ktzh_trains
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.crud.price_history import add_price_record, get_latest_price_record
+from app.crud.price_history import get_latest_price_record
+from app.crud.add_price_record import add_price_record
 from app.db.base import Tracking
-from scrapers.ktzh_client import get_ktzh_trains
+from app.scrapers.ktzh_client import get_ktzh_trains
 
-from db.session import AsyncSessionLocal
+from app.db.session import AsyncSessionLocal
 
 
 async def process_tracking_checking(
