@@ -2,7 +2,7 @@
 from datetime import date
 from decimal import Decimal
 from typing import Optional
-
+from app.services.cache_serivce import get_cache_ktzh_trains
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -17,7 +17,7 @@ async def process_tracking_checking(
     session: AsyncSession,
     tracking_info: Tracking,
 ) -> bool:
-    parsed_data = await get_ktzh_trains(
+    parsed_data = await get_cache_ktzh_trains(
         departure_code=tracking_info.origin_code,
         arrival_code=tracking_info.destination_code,
         departure_date=str(tracking_info.departure_date)
