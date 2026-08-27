@@ -5,7 +5,7 @@ from typing import Optional
 from app.services.cache_service import get_cache_ktzh_trains
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-
+from app.services.notifier import send_tg_notification
 from app.crud.price_history import get_latest_price_record
 from app.crud.add_price_record import add_price_record
 from app.db.base import Tracking
@@ -17,7 +17,7 @@ from app.db.session import AsyncSessionLocal
 async def process_tracking_checking(
     session: AsyncSession,
     tracking_info: Tracking,
-) -> bool:
+) -> tuple[bool, Optional[Decimal]]:
     parsed_data = await get_cache_ktzh_trains(
         departure_code=tracking_info.origin_code,
         arrival_code=tracking_info.destination_code,
@@ -25,7 +25,7 @@ async def process_tracking_checking(
     )
     
     if not parsed_data: 
-        return False
+        return False, None
     
     last_record = await get_latest_price_record(
         session=session, 
@@ -36,13 +36,13 @@ async def process_tracking_checking(
     
     tickets = parsed_data.get("tickets", [])
     if not tickets:
-        return False
+        return False, None
 
     if tracking_info.car_type:  # указан класс транспорта
         tickets = [ticket for ticket in tickets if ticket.get("car_type") == tracking_info.car_type]
 
     if not tickets:
-        return False
+        return False, None
 
     min_price_ticket = min(tickets, key=lambda ticket: ticket["price"])
     current_price = min_price_ticket["price"]
@@ -55,7 +55,7 @@ async def process_tracking_checking(
 
     notification = current_price <= tracking_info.target_price
         
-    return notification
+    return notification, current_price
 
 
 async def run_all_price_checks() -> None: 
@@ -72,14 +72,24 @@ async def run_all_price_checks() -> None:
         
         for tracking in active_trackings:
             try:
-                should_notify = await process_tracking_checking(
+                should_notify, current_price = await process_tracking_checking(
                     session=session,
                     tracking_info=tracking
                 )
                 
                 if should_notify:
-                    # TODO: Вызов отправки Telegram-уведомления
-                    print(f"Требуется отправка уведомления для tracking_id={tracking.id}")
+                    message= (
+                        f"<b>Good price tickets found!</b>\n\n"
+                        f"Route: {tracking.origin_code} to {tracking.destination_code}\n"
+                        f"Date: {tracking.departure_date}\n"
+                        f"Target price: {tracking.target_price} ₸\n"
+                        f"Current price: {current_price} ₸\n"
+                    )
+                    await send_tg_notification(
+                        chat_id=tracking.user_id,
+                        text=message
+                    )
+                    
         
             except Exception as e:
                 print("Error", e)
