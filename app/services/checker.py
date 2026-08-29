@@ -13,15 +13,26 @@ from app.scrapers.ktzh_client import get_ktzh_trains
 
 from app.db.session import AsyncSessionLocal
 
+WEEKDAYS_RU = {
+    0: "пнд", 1: "втр", 2: "срд", 3: "чтв", 4: "птн", 5: "сбт", 6: "вск"
+}
+
+def format_ktz_date(dt: date) -> str:
+    day_str = dt.strftime("%d-%m-%Y")
+    weekday_str = WEEKDAYS_RU[dt.weekday()]
+    return f"{day_str}, {weekday_str}"
 
 async def process_tracking_checking(
     session: AsyncSession,
     tracking_info: Tracking,
 ) -> tuple[bool, Optional[Decimal]]:
+    
+    formatted_date = format_ktz_date(tracking_info.departure_date)
     parsed_data = await get_cache_ktzh_trains(
+        
         departure_code=tracking_info.origin_code,
         arrival_code=tracking_info.destination_code,
-        departure_date=str(tracking_info.departure_date)
+        departure_date=formatted_date
     )
     
     if not parsed_data: 
@@ -46,11 +57,14 @@ async def process_tracking_checking(
 
     min_price_ticket = min(tickets, key=lambda ticket: ticket["price"])
     current_price = min_price_ticket["price"]
+    
+    carrier_name = min_price_ticket.get("carrier") or min_price_ticket.get("train_number") or "KTZ"
 
     await add_price_record(
         session=session,
         tracking_id=tracking_info.id,
-        price=current_price
+        new_price=current_price,
+        carrier=carrier_name
     )
 
     notification = current_price <= tracking_info.target_price
@@ -80,7 +94,7 @@ async def run_all_price_checks() -> None:
                 if should_notify:
                     message= (
                         f"<b>Good price tickets found!</b>\n\n"
-                        f"Route: {tracking.origin_code} to {tracking.destination_code}\n"
+                        f"Route: {tracking.origin_name} to {tracking.destination_name}\n"
                         f"Date: {tracking.departure_date}\n"
                         f"Target price: {tracking.target_price} ₸\n"
                         f"Current price: {current_price} ₸\n"

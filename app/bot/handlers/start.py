@@ -13,7 +13,7 @@ async def command_start(message: types.Message):
     username = message.from_user.username or message.from_user.first_name
     
     async with AsyncSessionLocal() as session:
-        statement = insert(User).values(id=tg_id, telegram_id=tg_id, username=username)
+        statement = insert(User).values(id=tg_id, telegram_id=tg_id, username=username).on_conflict_do_nothing(index_elements=["id"])
         
         await session.execute(statement)
         await session.commit()
