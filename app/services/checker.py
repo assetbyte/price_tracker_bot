@@ -11,6 +11,7 @@ from app.crud.add_price_record import add_price_record
 from app.db.base import Tracking
 from app.scrapers.ktzh_client import get_ktzh_trains
 
+from sqlalchemy.orm import selectinload
 from app.db.session import AsyncSessionLocal
 
 WEEKDAYS_RU = {
@@ -74,7 +75,7 @@ async def process_tracking_checking(
 
 async def run_all_price_checks() -> None: 
     async with AsyncSessionLocal() as session: 
-        statement = select(Tracking).where(Tracking.is_active.is_(True))
+        statement = select(Tracking).where(Tracking.is_active.is_(True)).options(selectinload(Tracking.user))
         result = await session.execute(statement)
         active_trackings = result.scalars().all()
         
@@ -100,7 +101,7 @@ async def run_all_price_checks() -> None:
                         f"Current price: {current_price} ₸\n"
                     )
                     await send_tg_notification(
-                        chat_id=tracking.user_id,
+                        chat_id=tracking.user.telegram_id,
                         text=message
                     )
                     

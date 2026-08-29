@@ -4,10 +4,10 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from sqlalchemy import select
-
+from services.checker import run_all_price_checks
 from app.db.base import Tracking, User 
 from app.db.session import AsyncSessionLocal
-
+from app.services.checker import process_tracking_checking
 router = Router()
 
 
@@ -72,19 +72,22 @@ async def process_car_type(message: types.Message, state: FSMContext):
     await message.answer("Enter you desirable maximum price:")
 
 
+
+
 @router.message(FormTracking.target_price)
 async def process_target_price(message: types.Message, state: FSMContext):
     try:
         target_price = float(message.text.strip().replace(",", "."))
         
-        if target_price <=0 :
+        if target_price <= 0:
             await message.answer("Price must be greater than 0")
             return
         
-        user = await state.get_data()
+        user_data = await state.get_data()
         telegram_id = message.from_user.id
+        
         async with AsyncSessionLocal() as session:
-            statement = select(User).where(User.telegram_id==telegram_id)
+            statement = select(User).where(User.telegram_id == telegram_id)
             result = await session.execute(statement)
             db_user = result.scalar_one_or_none()
             
@@ -92,27 +95,52 @@ async def process_target_price(message: types.Message, state: FSMContext):
                 await message.answer("User not found")
                 await state.clear()
                 return
+                
             new_tracking = Tracking(
                 user_id=db_user.id,  
-                origin_code=user["origin_code"],
-                destination_code=user["destination_code"],
-                origin_name=user["origin_name"],
-                destination_name=user["destination_name"],
-                departure_date=user["departure_date"],
+                origin_code=user_data["origin_code"],
+                destination_code=user_data["destination_code"],
+                origin_name=user_data["origin_name"],
+                destination_name=user_data["destination_name"],
+                departure_date=user_data["departure_date"],
                 target_price=target_price,
-                car_type=user["car_type"],
+                car_type=user_data["car_type"],
                 transport_type="train",
                 is_active=True,
             )
             session.add(new_tracking)
             await session.commit()
+            await session.refresh(new_tracking)
             
             await state.clear()
-            await message.answer("Tracking successfully created")
             
-    except ValueError:
-        await message.answer(
-            "Invalid price format")
-        
-        
+            await message.answer("Tracking successfully created!")
+            
+            should_notify, current_price = await process_tracking_checking(
+                session=session,
+                tracking_info=new_tracking
+            )
+            
+            if current_price is not None:
+                if should_notify:
+                    await message.answer(
+                        f"<b>I found cheap tickets for you right now!</b>\n\n"
+                        f"Route: {new_tracking.origin_name} ➔ {new_tracking.destination_name}\n"
+                        f"Date: {new_tracking.departure_date}\n"
+                        f"Current price: <b>{current_price} ₸</b>\n"
+                        f"Your target: {target_price} ₸",
+                        parse_mode="HTML"
+                    )
+                else:
+                    await message.answer(
+                        f"Current minimum price right now is <b>{current_price} ₸</b>.\n"
+                        f"We will notify you when price drops to or below {target_price} ₸.",
+                        parse_mode="HTML"
+                    )
+            else:
+                await message.answer(
+                    "Could not find active tickets for these parameters at the moment"
+                )
 
+    except ValueError:
+        await message.answer("Invalid price format")
