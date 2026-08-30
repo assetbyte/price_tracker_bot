@@ -1,15 +1,19 @@
 from datetime import datetime
+from decimal import Decimal
 from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from sqlalchemy import select
-from services.checker import run_all_price_checks
+from app.services.checker import run_all_price_checks
 from app.db.base import Tracking, User 
 from app.db.session import AsyncSessionLocal
 from app.services.checker import process_tracking_checking
 router = Router()
-
+STATION_CHOICES = {
+    "астана": "2700000",
+    "алматы": "2708001",
+}
 
 class FormTracking(StatesGroup):
   origin = State()
@@ -18,11 +22,31 @@ class FormTracking(StatesGroup):
   car_type = State()
   target_price = State()
 
+from sqlalchemy import delete
 
-async def get_station_code(station_name: str) -> str:
-  # test variant
-  return "2700000"
+@router.message(Command("clear"))
+async def clear_user_trackings(message: types.Message):
+    telegram_id = message.from_user.id
+    
+    async with AsyncSessionLocal() as session:
+        # Находим пользователя по telegram_id
+        statement = select(User).where(User.telegram_id == telegram_id)
+        result = await session.execute(statement)
+        db_user = result.scalar_one_or_none()
+        
+        if db_user:
+            # Удаляем все подписки текущего пользователя
+            await session.execute(
+                delete(Tracking).where(Tracking.user_id == db_user.id)
+            )
+            await session.commit()
+            await message.answer("🧹 Все ваши подписки успешно удалены из базы данных!")
+        else:
+            await message.answer("Пользователь не найден.")
 
+async def get_station_code(station_name: str) -> str | None:
+    clean_name = station_name.strip().lower()
+    return STATION_CHOICES.get(clean_name)
 
 @router.message(Command("new_tracking"))
 async def start_tracking_creation(message: types.Message, state: FSMContext):
@@ -77,12 +101,13 @@ async def process_car_type(message: types.Message, state: FSMContext):
 @router.message(FormTracking.target_price)
 async def process_target_price(message: types.Message, state: FSMContext):
     try:
-        target_price = float(message.text.strip().replace(",", "."))
+        raw_price = message.text.strip().replace(",", ".")
+        target_price = Decimal(raw_price)
         
         if target_price <= 0:
             await message.answer("Price must be greater than 0")
             return
-        
+
         user_data = await state.get_data()
         telegram_id = message.from_user.id
         

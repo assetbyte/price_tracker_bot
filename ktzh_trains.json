@@ -8,12 +8,12 @@
         },
         {
             "car_type": "Купе",
-            "free_seats": 32,
+            "free_seats": 29,
             "price": 17103
         },
         {
             "car_type": "Купе",
-            "free_seats": 223,
+            "free_seats": 219,
             "price": 35372
         },
         {
@@ -23,12 +23,12 @@
         },
         {
             "car_type": "Отыратын",
-            "free_seats": 174,
+            "free_seats": 173,
             "price": 10393
         },
         {
             "car_type": "Купе",
-            "free_seats": 83,
+            "free_seats": 82,
             "price": 38775
         },
         {
@@ -38,7 +38,7 @@
         },
         {
             "car_type": "Плацкарт",
-            "free_seats": 8,
+            "free_seats": 9,
             "price": 11351
         },
         {
