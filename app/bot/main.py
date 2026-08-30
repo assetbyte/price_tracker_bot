@@ -1,6 +1,6 @@
 import asyncio
 from aiogram import Bot, Dispatcher
-from app.bot.handlers import start, tracking
+from app.bot.handlers import start, tracking, view, delete_tracking
 from dotenv import load_dotenv
 import os
 load_dotenv()
@@ -12,6 +12,8 @@ async def main():
 
   dp.include_router(start.router)
   dp.include_router(tracking.router)
+  dp.include_router(view.router)
+  dp.include_router(delete_tracking.router)
 
   print("Bot started")
   await dp.start_polling(bot)
