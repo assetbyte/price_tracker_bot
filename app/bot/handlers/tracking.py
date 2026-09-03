@@ -149,3 +149,135 @@ async def process_target_price(message: types.Message, state: FSMContext):
 
     except ValueError:
         await message.answer("Invalid price format")
+        
+
+class FormEditTracking(StatesGroup):
+    tracking_id = State()
+    origin = State()
+    destination = State()
+    departure_date = State()
+    car_type = State()
+    target_price = State()
+    
+@router.message(Command("edit_tracking"))
+async def process_edit_tracking(message: types.Message, state: FSMContext):
+    await state.set_state(FormEditTracking.tracking_id)
+    await message.answer("Enter your tracking ID:")
+    
+@router.message(FormEditTracking.tracking_id)
+async def process_edit_tracking_id(message: types.Message, state: FSMContext):
+    if not message.text.strip().isdigit():
+        await message.answer("Please enter a valid ID (number)")
+        return
+
+    tracking_id = int(message.text.strip())
+    tg_id = message.from_user.id
+    
+    async with AsyncSessionLocal() as session:
+        statement = select(Tracking).join(User).where(Tracking.id == tracking_id, User.telegram_id == tg_id)
+        result = await session.execute(statement)
+        tracking = result.scalar_one_or_none()
+
+        if tracking:
+            await state.update_data(tracking_id=tracking_id)
+            await state.set_state(FormEditTracking.origin)
+            await message.answer("Enter new departure station name:")
+        else:
+            await message.answer(f"No tracking found with ID {tracking_id}, enter valid ID again:")
+            
+@router.message(FormEditTracking.origin)
+async def process_edit_origin(message: types.Message, state: FSMContext):
+    origin_name = message.text.strip()
+    origin_code = await get_station_code(origin_name)
+    await state.update_data(origin_name=origin_name, origin_code=origin_code)
+    await state.set_state(FormEditTracking.destination)
+    await message.answer("Enter new arrival station name:")
+    
+@router.message(FormEditTracking.destination)
+async def process_edit_destination(message: types.Message, state: FSMContext):
+    destination_name = message.text.strip()
+    destination_code = await get_station_code(destination_name)
+    
+    await state.update_data(destination_name=destination_name, destination_code=destination_code)
+    await state.set_state(FormEditTracking.departure_date)
+    await message.answer('Enter new departure date in "DD-MM-YYYY" format:')
+    
+@router.message(FormEditTracking.departure_date)
+async def process_edit_departure_date(message: types.Message, state: FSMContext):
+    try: 
+        parsed_date = datetime.strptime(message.text.strip(), "%d-%m-%Y").date()
+        
+        if parsed_date < datetime.now().date():
+            await message.answer("Date cannot be in the past, enter a valid date!")
+            return
+        await state.update_data(departure_date=parsed_date)
+        await state.set_state(FormEditTracking.car_type)
+        await message.answer("Choose a new train carriage type (Плацкарт, Купе, Люкс):")
+    
+    except ValueError:
+        await message.answer('Invalid date, use "DD-MM-YYYY" format:')
+        
+@router.message(FormEditTracking.car_type)
+async def process_edit_car_type(message: types.Message, state: FSMContext):
+    car_type = message.text.strip()
+    await state.update_data(car_type=car_type)
+    await state.set_state(FormEditTracking.target_price)
+    await message.answer("Enter your new desirable maximum price:")
+    
+@router.message(FormEditTracking.target_price)
+async def process_edit_target_price(message: types.Message, state: FSMContext):
+    try:
+        raw_price = message.text.strip().replace(",", ".")
+        target_price = Decimal(raw_price)
+        
+        if target_price <= 0:
+            await message.answer("Price must be greater than 0")
+            return
+
+        user_data = await state.get_data()
+        tracking_id = user_data["tracking_id"]
+        tg_id = message.from_user.id
+        
+        async with AsyncSessionLocal() as session:
+            statement = select(Tracking).join(User).where(Tracking.id == tracking_id, User.telegram_id == tg_id)
+            result = await session.execute(statement)
+            tracking = result.scalar_one_or_none()
+
+            if tracking:
+                tracking.origin_code = user_data["origin_code"]
+                tracking.destination_code = user_data["destination_code"]
+                tracking.origin_name = user_data["origin_name"]
+                tracking.destination_name = user_data["destination_name"]
+                tracking.departure_date = user_data["departure_date"]
+                tracking.car_type = user_data["car_type"]
+                tracking.target_price = target_price
+                
+                await session.commit()
+                
+                should_notify, current_price = await process_tracking_checking(
+                session=session, tracking_info=tracking)
+                
+                await state.clear()
+                
+                await message.answer("Tracking successfully updated!")
+                
+                if current_price is not None:
+                    if should_notify:
+                        await message.answer(
+                            f"<b>I found cheap tickets for you right now!</b>\n\n"
+                            f"Route: {tracking.origin_name} ➔ {tracking.destination_name}\n"
+                            f"Date: {tracking.departure_date}\n"
+                            f"Current price: <b>{current_price} ₸</b>\n"
+                            f"Your target: {target_price} ₸",
+                            parse_mode="HTML"
+                        )
+                    else:
+                        await message.answer(f"Current minimum price right now is <b>{current_price} ₸</b>.\n"
+                            f"We will notify you when price drops to or below {target_price} ₸.",
+                            parse_mode="HTML"
+                        )
+                else:
+                    await message.answer("Could not find active tickets for these parameters at the moment")
+    except ValueError:
+        await message.answer("Invalid price format")
+    

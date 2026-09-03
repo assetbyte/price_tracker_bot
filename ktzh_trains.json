@@ -1,60 +1,45 @@
 {
-    "total_records": 11,
+    "total_records": 8,
     "tickets": [
         {
+            "car_type": "Купе",
+            "free_seats": 275,
+            "price": 27274
+        },
+        {
             "car_type": "Плацкарт",
-            "free_seats": 37,
-            "price": 12441
+            "free_seats": 59,
+            "price": 11903
         },
         {
             "car_type": "Купе",
-            "free_seats": 84,
+            "free_seats": 49,
             "price": 20561
         },
         {
-            "car_type": "Купе",
-            "free_seats": 273,
-            "price": 35372
-        },
-        {
-            "car_type": "Люкс",
-            "free_seats": 20,
-            "price": 28224
-        },
-        {
             "car_type": "Отыратын",
-            "free_seats": 200,
+            "free_seats": 185,
             "price": 10393
         },
         {
             "car_type": "Купе",
-            "free_seats": 161,
+            "free_seats": 157,
             "price": 38775
         },
         {
             "car_type": "Люкс",
-            "free_seats": 13,
-            "price": 30887
-        },
-        {
-            "car_type": "Плацкарт",
-            "free_seats": 101,
-            "price": 13530
-        },
-        {
-            "car_type": "Купе",
-            "free_seats": 85,
-            "price": 20561
-        },
-        {
-            "car_type": "Купе",
-            "free_seats": 209,
-            "price": 38775
-        },
-        {
-            "car_type": "Люкс",
-            "free_seats": 7,
+            "free_seats": 6,
             "price": 33547
+        },
+        {
+            "car_type": "Купе",
+            "free_seats": 138,
+            "price": 30838
+        },
+        {
+            "car_type": "Люкс",
+            "free_seats": 6,
+            "price": 33492
         }
     ]
 }
