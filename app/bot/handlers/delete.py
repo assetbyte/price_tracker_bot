@@ -58,10 +58,11 @@ async def process_tracking_id(message: types.Message, state: FSMContext):
                 await session.delete(tracking)
                 await session.commit()
                 await message.answer(f"Tracking with ID {tracking_id} was deleted successfully")
+                await state.clear()
             else:
-                await message.answer(f"No tracking found with ID {tracking_id}")
+                await message.answer(f"No tracking found with ID {tracking_id}, enter valid ID again:")
+                return
 
     except Exception as e:
         await message.answer(f"error: {str(e)}")
-    finally:
         await state.clear()
