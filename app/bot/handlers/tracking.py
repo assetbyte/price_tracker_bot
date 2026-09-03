@@ -24,26 +24,6 @@ class FormTracking(StatesGroup):
 
 from sqlalchemy import delete
 
-@router.message(Command("clear"))
-async def clear_user_trackings(message: types.Message):
-    telegram_id = message.from_user.id
-    
-    async with AsyncSessionLocal() as session:
-        # Находим пользователя по telegram_id
-        statement = select(User).where(User.telegram_id == telegram_id)
-        result = await session.execute(statement)
-        db_user = result.scalar_one_or_none()
-        
-        if db_user:
-            # Удаляем все подписки текущего пользователя
-            await session.execute(
-                delete(Tracking).where(Tracking.user_id == db_user.id)
-            )
-            await session.commit()
-            await message.answer("🧹 Все ваши подписки успешно удалены из базы данных!")
-        else:
-            await message.answer("Пользователь не найден.")
-
 async def get_station_code(station_name: str) -> str | None:
     clean_name = station_name.strip().lower()
     return STATION_CHOICES.get(clean_name)

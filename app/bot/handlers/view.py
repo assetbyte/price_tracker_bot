@@ -28,6 +28,7 @@ async def my_trackings(message: types.Message):
     
     for elem in trackings:
         text = (
+            f"<b>Tracking ID:</b> {elem.id}\n"
             f"<b>Route:</b> {elem.origin_name} ➔ {elem.destination_name}\n"
             f"<b>Departure date:</b> {elem.departure_date}\n"
             f"<b>Target price:</b> {elem.target_price} ₸\n"

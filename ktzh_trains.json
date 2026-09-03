@@ -3,58 +3,58 @@
     "tickets": [
         {
             "car_type": "Плацкарт",
-            "free_seats": 11,
-            "price": 11351
+            "free_seats": 37,
+            "price": 12441
         },
         {
             "car_type": "Купе",
-            "free_seats": 29,
-            "price": 17103
-        },
-        {
-            "car_type": "Купе",
-            "free_seats": 219,
-            "price": 35372
-        },
-        {
-            "car_type": "Люкс",
-            "free_seats": 8,
-            "price": 33547
-        },
-        {
-            "car_type": "Отыратын",
-            "free_seats": 173,
-            "price": 10393
-        },
-        {
-            "car_type": "Купе",
-            "free_seats": 82,
-            "price": 38775
-        },
-        {
-            "car_type": "Люкс",
-            "free_seats": 4,
-            "price": 33547
-        },
-        {
-            "car_type": "Плацкарт",
-            "free_seats": 9,
-            "price": 11351
-        },
-        {
-            "car_type": "Купе",
-            "free_seats": 44,
+            "free_seats": 84,
             "price": 20561
         },
         {
             "car_type": "Купе",
-            "free_seats": 101,
-            "price": 21136
+            "free_seats": 273,
+            "price": 35372
         },
         {
             "car_type": "Люкс",
-            "free_seats": 6,
-            "price": 29555
+            "free_seats": 20,
+            "price": 28224
+        },
+        {
+            "car_type": "Отыратын",
+            "free_seats": 200,
+            "price": 10393
+        },
+        {
+            "car_type": "Купе",
+            "free_seats": 161,
+            "price": 38775
+        },
+        {
+            "car_type": "Люкс",
+            "free_seats": 13,
+            "price": 30887
+        },
+        {
+            "car_type": "Плацкарт",
+            "free_seats": 101,
+            "price": 13530
+        },
+        {
+            "car_type": "Купе",
+            "free_seats": 85,
+            "price": 20561
+        },
+        {
+            "car_type": "Купе",
+            "free_seats": 209,
+            "price": 38775
+        },
+        {
+            "car_type": "Люкс",
+            "free_seats": 7,
+            "price": 33547
         }
     ]
 }
