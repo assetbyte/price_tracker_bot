@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 from aiogram import F, Router, types
 from aiogram.filters import Command
@@ -281,3 +281,61 @@ async def process_edit_target_price(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer("Invalid price format")
     
+user_check_cooldown: dict[int, datetime] = {}
+COOLDOWN_SECONDS = 120 # 2 MINUTES
+@router.message(Command("check_now"))
+async def process_check_now(message: types.Message):
+    tg_id = message.from_user.id
+    now = datetime.now(timezone.utc)
+    if tg_id in user_check_cooldown:
+        last_check_time = user_check_cooldown[tg_id]
+        if (now - last_check_time).total_seconds() < COOLDOWN_SECONDS:
+            remaining_time = COOLDOWN_SECONDS - (now - last_check_time).total_seconds()
+            await message.answer(f"Please wait {int(remaining_time)} seconds before checking again.")
+            return
+        
+    async with AsyncSessionLocal() as session:
+        statement = select(Tracking).join(User).where(User.telegram_id == tg_id)    
+        result = await session.execute(statement)
+        trackings = result.scalars().all()
+        
+        if not trackings:
+            await message.answer("You have no active trackings to check")
+            return
+        
+        user_check_cooldown[tg_id] = now
+        await message.answer("Checking all your trackings for price updates...")
+        all_results = []
+        
+        for tracking in trackings:
+            try:
+                should_notify, current_price = await process_tracking_checking(session=session, tracking_info=tracking)
+                if current_price is not None:
+                    if should_notify:
+                        all_results.append(
+                            f"<b>Cheap tickets found!</b>\n"
+                            f"Route: {tracking.origin_name} ➔ {tracking.destination_name}\n"
+                            f"Date: {tracking.departure_date}\n"
+                            f"Current price: <b>{current_price} ₸</b>\n"
+                            f"Your target: {tracking.target_price} ₸\n\n"
+                        )
+                    else:
+                        all_results.append(
+                            f"Route: {tracking.origin_name} ➔ {tracking.destination_name}\n"
+                            f"Date: {tracking.departure_date}\n"
+                            f"Current price: <b>{current_price} ₸</b>\n"
+                            f"Your target: {tracking.target_price} ₸\n\n"
+                        )
+                else: 
+                    all_results.append(
+                        f"Route: {tracking.origin_name} ➔ {tracking.destination_name}\n"
+                        f"Date: {tracking.departure_date}\n"
+                        f"No active tickets found for this tracking at the moment\n\n"
+                    )
+            except Exception as e:
+                all_results.append(
+                    f"Route: {tracking.origin_name} ➔ {tracking.destination_name}\n"
+                    f"Date: {tracking.departure_date}\n"
+                    f"Error: {str(e)}\n\n"
+                )
+        await message.answer("".join(all_results), parse_mode="HTML")
