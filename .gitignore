@@ -12,3 +12,15 @@ ktzh_trains.json
 
 *.log
 *.sqlite3
+
+# Celery Beat schedule files
+celerybeat-schedule*
+*.db
+
+# Celery Beat temporary files
+celerybeat-schedule*
+
+# Local test scripts & data dumps
+add_test_tracking.py
+test_checker.py
+*.json
