@@ -5,19 +5,19 @@ def get_popular_stations() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         keyboard=[
             [
-                KeyboardButton(text="Almaty"),
-                KeyboardButton(text="Astana"),
-                KeyboardButton(text="Shymkent"),
+                KeyboardButton(text="Астана"),
+                KeyboardButton(text="Алматы"),
+                KeyboardButton(text="Шымкент"),
             ],
             [
-                KeyboardButton(text="Karaganda"),
-                KeyboardButton(text="Aktobe"),
-                KeyboardButton(text="Pavlodar"),
+                KeyboardButton(text="Караганда"),
+                KeyboardButton(text="Актобе"),
+                KeyboardButton(text="Павлодар"),
             ],
             [
-                KeyboardButton(text="Atyrau"),
-                KeyboardButton(text="Taraz"),
-                KeyboardButton(text="Ust-Kamenogorsk"),
+                KeyboardButton(text="Атырау"),
+                KeyboardButton(text="Тараз"),
+                KeyboardButton(text="Усть-Каменогорск"),
             ],
             [
                 KeyboardButton(text="/cancel")
@@ -36,9 +36,9 @@ def get_quick_date() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         keyboard=[
             [
-                KeyboardButton(text=today.strftime("%Y-%m-%d")),
-                KeyboardButton(text=tomorrow.strftime("%Y-%m-%d")),
-                KeyboardButton(text=day_after_tomorrow.strftime("%Y-%m-%d")),
+                KeyboardButton(text=today.strftime("%d-%m-%Y")),
+                KeyboardButton(text=tomorrow.strftime("%d-%m-%Y")),
+                KeyboardButton(text=day_after_tomorrow.strftime("%d-%m-%Y")),
             ],
             [
                 KeyboardButton(text="/cancel")
@@ -55,9 +55,6 @@ def get_car_types() -> ReplyKeyboardMarkup:
                 KeyboardButton(text="Плацкарт"),
                 KeyboardButton(text="Купе"),
                 KeyboardButton(text="Люкс"),
-            ],
-            [
-                KeyboardButton(text="Any"),
             ],
             [
                 KeyboardButton(text="/cancel")

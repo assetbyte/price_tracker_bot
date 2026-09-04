@@ -9,6 +9,7 @@ from app.services.checker import run_all_price_checks
 from app.db.base import Tracking, User 
 from app.db.session import AsyncSessionLocal
 from app.services.checker import process_tracking_checking
+from app.bot.keyboards.tracking_kb import get_car_types, get_popular_stations, get_quick_date
 router = Router()
 STATION_CHOICES = {
     "астана": "2700000",
@@ -31,8 +32,10 @@ async def get_station_code(station_name: str) -> str | None:
 @router.message(Command("new_tracking"))
 async def start_tracking_creation(message: types.Message, state: FSMContext):
     await state.set_state(FormTracking.origin)
-    await message.answer("Enter name of a departure station:")
-    
+    await message.answer(
+        "Enter name of a departure station (or select from popular):",
+        reply_markup=get_popular_stations()
+    )
 
 @router.message(FormTracking.origin)
 async def process_origin(message: types.Message, state: FSMContext):
@@ -40,7 +43,10 @@ async def process_origin(message: types.Message, state: FSMContext):
     origin_code = await get_station_code(origin_name)
     await state.update_data(origin_name=origin_name, origin_code=origin_code)
     await state.set_state(FormTracking.destination)
-    await message.answer("Enter name of the arrival station:")
+    await message.answer(
+        "Enter name of the arrival station (or select from popular):",
+        reply_markup=get_popular_stations()
+    )
 
 @router.message(FormTracking.destination)
 async def process_destination(message: types.Message, state: FSMContext):
@@ -49,7 +55,10 @@ async def process_destination(message: types.Message, state: FSMContext):
     
     await state.update_data(destination_name=destination_name, destination_code=destination_code)
     await state.set_state(FormTracking.departure_date)
-    await message.answer('Enter departure date in "DD-MM-YYYY" format:')
+    await message.answer(
+        'Enter departure date in "DD-MM-YYYY" format:',
+        reply_markup=get_quick_date()
+    )
 
 
 @router.message(FormTracking.departure_date)
@@ -62,8 +71,9 @@ async def process_departure_date(message: types.Message, state: FSMContext):
             return
         await state.update_data(departure_date=parsed_date)
         await state.set_state(FormTracking.car_type)
-        await message.answer("Choose a train carriage type (Плацкарт, Купе, Люкс):")
-    
+        reply_markup = get_car_types()
+        await message.answer("Choose a train carriage type (Плацкарт, Купе, Люкс):", reply_markup=reply_markup)
+
     except ValueError:
         await message.answer('Invalid date, use "DD-MM-YYYY" format:')
 
