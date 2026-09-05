@@ -20,7 +20,7 @@ def run_all_trackings_check():
 @shared_task
 def run_cleanup_archive_active_trackings():
     cnt = asyncio.run(_async_runner(run_cleanup_archive_trackings()))
-    return f"Number of archived tracking for today: {cnt}"
+    return f"Number of archived tracking for today: {cnt}, ID: {run_cleanup_archive_active_trackings.request.id}"
     
     
 

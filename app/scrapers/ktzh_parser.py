@@ -28,31 +28,28 @@ def parse_html_to_json(html_content=None, output_json_path="ktzh_trains.json"):
         }
     
     
-    rows = soup.select("tr")
+    rows = soup.select(".result-card__details table tbody tr")
+    
 
     trains_data = []
     current_train = None
 
     for row in rows:
-        cols = [cell.text.strip() for cell in row.find_all(["td", "th"]) if cell.text.strip()]
+        row_car_type =  row.select_one(".result-card__details-table-car-type")
+        row_free_seats = row.select_one(".result-card__details-table-seats-count")
+        row_price = row.select_one(".result-card__details-table-cost")
         
-        if not cols:
-            continue
-
-        if "Вагон" in cols[0]:
-            continue
+        if row_car_type and row_free_seats and row_price:
+            car_type_text = row_car_type.text.strip()
+            free_seats_text = (row_free_seats.text.strip())
+            price_text = (row_price.text.strip())
 
         # структура строки: [Вагон, Количество мест, Цена]
         # ["Купе", "15", "14 513 ₸"]
-        if len(cols) >= 3:
-            car_type = cols[0]
-            free_seats = cols[1]
-            price = cols[2]
-            
             car_info = {
-                "car_type": car_type,
-                "free_seats": clean_int(free_seats),
-                "price": clean_int(price)
+                "car_type":     car_type_text,
+                "free_seats": clean_int(free_seats_text),
+                "price": clean_int(price_text)
             }
 
             trains_data.append(car_info)

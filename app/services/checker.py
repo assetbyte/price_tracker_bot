@@ -93,6 +93,7 @@ async def run_all_price_checks() -> None:
                     session=session,
                     tracking_info=tracking
                 )
+                await session.commit()
                 
                 if should_notify:
                     message= (
@@ -107,8 +108,10 @@ async def run_all_price_checks() -> None:
                         text=message
                     )
                     
+                    
         
             except Exception as e:
+                await session.rollback()
                 print("Error", e)
         
     
