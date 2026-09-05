@@ -2,6 +2,8 @@
 from datetime import date
 from decimal import Decimal
 from typing import Optional
+
+from sqlalchemy import update
 from app.services.cache_service import get_cache_ktzh_trains
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -111,6 +113,15 @@ async def run_all_price_checks() -> None:
         
     
     
+async def run_cleanup_archive_trackings() -> int:
+    async with AsyncSessionLocal() as session: 
+        statement = (update(Tracking).where(Tracking.is_active.is_(True), Tracking.departure_date < date.today()).
+                     values(is_active=False))
+            
+        result = await session.execute(statement)
+        await session.commit()
+        return result.rowcount 
+               
     
     
     

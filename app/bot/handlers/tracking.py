@@ -66,9 +66,7 @@ async def process_departure_date(message: types.Message, state: FSMContext):
     try: 
         parsed_date = datetime.strptime(message.text.strip(), "%d-%m-%Y").date()
         
-        if parsed_date < datetime.now().date():
-            await message.answer("Date cannot be in the past, enter a valid date!")
-            return
+        
         await state.update_data(departure_date=parsed_date)
         await state.set_state(FormTracking.car_type)
         reply_markup = get_car_types()

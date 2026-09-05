@@ -23,4 +23,8 @@ celery_app.conf.beat_schedule = {
         "task": "app.tasks.checker_tasks.run_all_trackings_check",
         "schedule": crontab(minute="*/15"),  
     },
+    "archive-active-trackings-cleanup-every-day": {
+        "task": "app.tasks.checker_tasks.run_cleanup_archive_active_trackings",
+        "schedule": crontab(hour=0, minute=0)
+    }
 }
