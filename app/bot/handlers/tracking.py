@@ -108,26 +108,42 @@ async def process_target_price(message: types.Message, state: FSMContext):
                 await message.answer("User not found")
                 await state.clear()
                 return
-                
-            new_tracking = Tracking(
-                user_id=db_user.id,  
-                origin_code=user_data["origin_code"],
-                destination_code=user_data["destination_code"],
-                origin_name=user_data["origin_name"],
-                destination_name=user_data["destination_name"],
-                departure_date=user_data["departure_date"],
-                target_price=target_price,
-                car_type=user_data["car_type"],
-                transport_type="train",
-                is_active=True,
+            
+            check_statement = select(Tracking).where(
+                Tracking.user_id == db_user.id,
+                Tracking.origin_code == user_data["origin_code"],
+                Tracking.destination_code == user_data["destination_code"],
+                Tracking.departure_date == user_data["departure_date"],
+                Tracking.car_type == user_data["car_type"],
+                Tracking.target_price == target_price,
             )
-            session.add(new_tracking)
-            await session.commit()
-            await session.refresh(new_tracking)
-            
-            await state.clear()
-            
-            await message.answer("Tracking successfully created!")
+            existing_tracking = await session.execute(check_statement)
+            existing_tracking = existing_tracking.scalar_one_or_none()
+            if existing_tracking:
+                await message.answer("You already have a tracking with these parameters.")
+                await state.clear()
+                return
+              
+            else: 
+                new_tracking = Tracking(
+                    user_id=db_user.id,  
+                    origin_code=user_data["origin_code"],
+                    destination_code=user_data["destination_code"],
+                    origin_name=user_data["origin_name"],
+                    destination_name=user_data["destination_name"],
+                    departure_date=user_data["departure_date"],
+                    target_price=target_price,
+                    car_type=user_data["car_type"],
+                    transport_type="train",
+                    is_active=True,
+                )
+                session.add(new_tracking)
+                await session.commit()
+                await session.refresh(new_tracking)
+                
+                await state.clear()
+                
+                await message.answer("Tracking successfully created!")
             
             should_notify, current_price = await process_tracking_checking(
                 session=session,
