@@ -31,14 +31,22 @@ async def process_tracking_checking(
 ) -> tuple[bool, Optional[Decimal]]:
     
     formatted_date = format_ktz_date(tracking_info.departure_date)
+    clean_date = formatted_date.split(",")[0]  # "DD-MM-YYYY"
     parsed_data = await get_cache_ktzh_trains(
         
         departure_code=tracking_info.origin_code,
         arrival_code=tracking_info.destination_code,
-        departure_date=formatted_date
+        departure_date=clean_date
     )
     
     if not parsed_data: 
+        parsed_data = await get_ktzh_trains(
+            departure_code=tracking_info.origin_code,
+            arrival_code=tracking_info.destination_code,
+            departure_date=formatted_date
+        )
+    if not parsed_data:
+        print(f"No data found for tracking ID {tracking_info.id}")
         return False, None
     
     last_record = await get_latest_price_record(
