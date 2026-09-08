@@ -50,6 +50,7 @@ class Tracking(Base):
     target_price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     car_type: Mapped[Optional[str]] = mapped_column(String(50), nullable=True) # тип вагона/класса
     transport_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    last_notified_price: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true")
     created_at: Mapped[datetime] = mapped_column(

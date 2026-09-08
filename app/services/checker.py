@@ -103,9 +103,15 @@ async def run_all_price_checks() -> None:
                     session=session,
                     tracking_info=tracking
                 )
-                await session.commit()
                 
-                if should_notify:
+                is_new_price_lower = (
+                    tracking.last_notified_price is None or 
+                    (current_price is not None and current_price < tracking.last_notified_price)
+                )
+                
+                
+                if should_notify and is_new_price_lower:
+                    tracking.last_notified_price = current_price
                     message= (
                         f"<b>Good price tickets found!</b>\n\n"
                         f"Route: {tracking.origin_name} to {tracking.destination_name}\n"
@@ -117,6 +123,8 @@ async def run_all_price_checks() -> None:
                         chat_id=tracking.user.telegram_id,
                         text=message
                     )
+                    
+                await session.commit()
                     
                     
         
