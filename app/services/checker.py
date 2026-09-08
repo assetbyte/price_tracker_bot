@@ -31,12 +31,12 @@ async def process_tracking_checking(
 ) -> tuple[bool, Optional[Decimal]]:
     
     formatted_date = format_ktz_date(tracking_info.departure_date)
-    clean_date = formatted_date.split(",")[0]  # "DD-MM-YYYY"
+    
     parsed_data = await get_cache_ktzh_trains(
         
         departure_code=tracking_info.origin_code,
         arrival_code=tracking_info.destination_code,
-        departure_date=clean_date
+        departure_date=formatted_date
     )
     
     if not parsed_data: 
@@ -59,7 +59,8 @@ async def process_tracking_checking(
     tickets = parsed_data.get("tickets", [])
     if not tickets:
         return False, None
-
+    
+    
     if tracking_info.car_type:  # указан класс транспорта
         tickets = [ticket for ticket in tickets if ticket.get("car_type") == tracking_info.car_type]
 
@@ -81,6 +82,7 @@ async def process_tracking_checking(
     notification = current_price <= tracking_info.target_price
         
     return notification, current_price
+
 
 
 async def run_all_price_checks() -> None: 

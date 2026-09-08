@@ -36,11 +36,16 @@ async def get_ktzh_trains(
             
             response.raise_for_status() 
             
+            
             print("Success:", response.status_code)
             print(F"Results saved to ktzh_trains.json")
+            # "15-09-2026, втр"
+            departure_date = departure_date.split(",")[0]
+            departure_day = int(departure_date.split('-')[0]) 
+            
             
         
-            data = parse_html_to_json(response.text)
+            data = parse_html_to_json(response.text, target_day=departure_day)
         
         except Exception as e:
             print(f"Error type: {type(e).__name__}")

@@ -11,7 +11,7 @@ def clean_int(value):
             
     return int(result) if result else 0
 
-def parse_html_to_json(html_content=None, output_json_path="ktzh_trains.json"):
+def parse_html_to_json(html_content=None, output_json_path="ktzh_trains.json", target_day = None):
     if html_content is None:
         with open("ktzh_direct_result.html", "r", encoding="utf-8") as f:
             html_content= f.read()
@@ -27,33 +27,49 @@ def parse_html_to_json(html_content=None, output_json_path="ktzh_trains.json"):
             "tickets": []
         }
     
-    
-    rows = soup.select(".result-card__details table tbody tr")
-    
-
     trains_data = []
-    current_train = None
-
-    for row in rows:
-        row_car_type =  row.select_one(".result-card__details-table-car-type")
-        row_free_seats = row.select_one(".result-card__details-table-seats-count")
-        row_price = row.select_one(".result-card__details-table-cost")
+    
+    cards = soup.select(".result-card")
+    
+    for card in cards:
+        if target_day:
+            date_element = card.select_one(".result-card__date")
+            if date_element:
+                words = date_element.text.strip().split()
+                card_date_day = None
+                for word in words:
+                    num = clean_int(word)
+                    if 1 <= num <= 31:
+                        card_date_day = num
+                        break 
+                if card_date_day is not None and card_date_day != int(target_day):
+                    continue
+                
+                
+        rows = card.select(".result-card__details table tbody tr")
         
-        if row_car_type and row_free_seats and row_price:
-            car_type_text = row_car_type.text.strip()
-            free_seats_text = (row_free_seats.text.strip())
-            price_text = (row_price.text.strip())
+        for row in rows:
+            row_car_type = row.select_one(".result-card__details-table-car-type")
+            row_free_seats = row.select_one(".result-card__details-table-seats-count")
+            row_price = row.select_one(".result-card__details-table-cost")
 
-        # структура строки: [Вагон, Количество мест, Цена]
-        # ["Купе", "15", "14 513 ₸"]
-            car_info = {
-                "car_type":     car_type_text,
-                "free_seats": clean_int(free_seats_text),
-                "price": clean_int(price_text)
-            }
+            if row_car_type and row_free_seats and row_price:
+                car_type_text = row_car_type.text.strip()
+                free_seats_text = row_free_seats.text.strip()
+                price_text = row_price.text.strip()
 
-            trains_data.append(car_info)
+                # структура строки: [Вагон, Количество мест, Цена]
+                # ["Купе", "15", "14 513 ₸"]
+                car_info = {
+                    "car_type": car_type_text,
+                    "free_seats": clean_int(free_seats_text),
+                    "price": clean_int(price_text)
+                }
 
+                trains_data.append(car_info)
+            
+    current_train = None
+    
     result = {
         "total_records": len(trains_data),
         "tickets": trains_data
