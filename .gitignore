@@ -24,3 +24,11 @@ celerybeat-schedule*
 add_test_tracking.py
 test_checker.py
 *.json
+
+venv/
+*.pyc
+__pycache__/
+node_modules/
+.angular/
+dist/
+.env
