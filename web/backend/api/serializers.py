@@ -20,4 +20,3 @@ class TrackingCreateSerializer(serializers.Serializer):
       max_digits=10, decimal_places=2, required=False, allow_null=True
     )
     
-        
