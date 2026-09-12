@@ -152,6 +152,8 @@ async def process_target_price(message: types.Message, state: FSMContext):
             )
             
             if current_price is not None:
+                new_tracking.price = current_price  
+                await session.commit()
                 if should_notify:
                     await message.answer(
                         f"<b>I found cheap tickets for you right now!</b>\n\n"

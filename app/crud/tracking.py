@@ -36,9 +36,8 @@ async def create_tracking(
     destination_name: str,
     departure_date: date,
     transport_type: str,
-    route: str,
-    price: Decimal | float,
     target_price: Decimal | float,
+    price: Optional[Decimal | float] = None,
     car_type: Optional[str] = None,
 ) -> Tracking:
     new_tracking = Tracking(
@@ -49,7 +48,6 @@ async def create_tracking(
         destination_name=destination_name,
         departure_date=departure_date,
         transport_type=transport_type,
-        route=route,
         price=price,
         target_price=target_price,
         car_type=car_type,
