@@ -1,7 +1,7 @@
 from adrf.views import APIView  
 from rest_framework import status
 from rest_framework.response import Response
-
+from app.services.checker import process_tracking_checking
 from app.crud.tracking import (
     create_tracking,
     deactivate_tracking,
@@ -29,9 +29,17 @@ class TrackingListView(APIView):
 
         async with AsyncSessionLocal() as session:
             new_tracking = await create_tracking(session, **validated_data)
+            
+            should_notify, current_price = await process_tracking_checking(session=session, tracking_info=new_tracking)
+            if current_price is not None:
+              new_tracking.price = current_price
+              await session.commit()
+              await session.refresh(new_tracking)
 
         output_serializer = TrackingSerializer(new_tracking)
         return Response(output_serializer.data, status=status.HTTP_201_CREATED)
+      
+      
 
 
 class TrackingDetailView(APIView):
