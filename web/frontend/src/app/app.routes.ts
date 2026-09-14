@@ -5,6 +5,7 @@ import { TrackingCreate } from './components/tracking-create/tracking-create';
 
 
 export const routes: Routes = [
+    { path: '', component: TrackingCreate},
     { path: 'trackings', component: TrackingList},
     { path: 'tracking-create', component: TrackingCreate},
     

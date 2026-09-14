@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TrackingService } from '../../services/tracking';
-
+import { TelegramService } from '../../services/telegram';
 interface Station {
   name: string;
   code: string;
@@ -23,7 +23,6 @@ export class TrackingCreate {
   ];
 
   formData = {
-    user_id: '',
     origin_name: '',
     origin_code: '',
     destination_name: '',
@@ -33,7 +32,15 @@ export class TrackingCreate {
     target_price: '',
   };
 
-  constructor(private trackingService: TrackingService, public router: Router) {}
+  constructor(private trackingService: TrackingService, public router: Router, private telegram: TelegramService) {}
+
+  ngOnInit( ){
+    const rawData = this.telegram.initData;
+    console.log(rawData)
+    if (this.telegram.user) {
+      console.log('Привет,', this.telegram.user.first_name);
+    }
+  }
 
   onOriginChange(stationName: string): void {
     const found = this.stations.find((s) => s.name === stationName);

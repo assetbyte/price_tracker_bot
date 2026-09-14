@@ -9,6 +9,7 @@ from app.crud.tracking import (
 )
 from app.db.session import AsyncSessionLocal
 from .serializers import TrackingCreateSerializer, TrackingSerializer
+from app.services.notifier import send_tg_notification
 
 
 class TrackingListView(APIView):
@@ -33,8 +34,11 @@ class TrackingListView(APIView):
             should_notify, current_price = await process_tracking_checking(session=session, tracking_info=new_tracking)
             if current_price is not None:
               new_tracking.price = current_price
+              if should_notify:
+                await send_tg_notification(chat_id=1847520791, text='test,test,test')
               await session.commit()
               await session.refresh(new_tracking)
+              
 
         output_serializer = TrackingSerializer(new_tracking)
         return Response(output_serializer.data, status=status.HTTP_201_CREATED)
