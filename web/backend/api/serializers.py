@@ -22,7 +22,7 @@ class TrackingSerializer(serializers.Serializer):
     destination_code = serializers.CharField(max_length=255)
     
 class TrackingCreateSerializer(serializers.Serializer):
-  user_id = serializers.BigIntegerField()
+  user_id = serializers.BigIntegerField(read_only=True)
   origin_code = serializers.CharField(max_length=50)
   destination_code = serializers.CharField(max_length=50)
   origin_name = serializers.CharField(max_length=255)

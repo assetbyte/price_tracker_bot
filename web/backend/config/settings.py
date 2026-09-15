@@ -83,6 +83,8 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
     'x-telegram-init-data',
+    'bypass-tunnel-reminder',
+
 ]
 
 TEMPLATES = [

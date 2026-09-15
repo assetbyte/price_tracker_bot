@@ -6,12 +6,12 @@ export const telegramAuthInterceptor: HttpInterceptorFn = (req, next) => {
   const telegramService = inject(TelegramService);
   const initData = telegramService.initData;
 
+  let headers = req.headers.set('bypass-tunnel-reminder', 'true');
+
   if (initData) {
-    const authReq = req.clone({
-      headers: req.headers.set('X-Telegram-Init-Data', initData),
-    });
-    return next(authReq);
+    headers = headers.set('X-Telegram-Init-Data', initData);
   }
 
-  return next(req);
+  const authReq = req.clone({ headers });
+  return next(authReq);
 };

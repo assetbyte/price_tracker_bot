@@ -22,10 +22,11 @@ class TelegramUser:
 
 
 class TelegramAuthentication(BaseAuthentication):
-    async def authenticate(self, request):
+    def authenticate(self, request):
         init_data = request.headers.get('X-Telegram-Init-Data')
         
         if not init_data:
+            print("debug")
             return None
 
         bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
