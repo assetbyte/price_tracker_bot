@@ -23,7 +23,7 @@ export interface Tracking {
 })
 export class TrackingService {
 
-  private apiUrl = 'https://fifty-ravens-leave.loca.lt/api/trackings/';
+  private apiUrl = 'https://brave-masks-sip.loca.lt/api/trackings/';
 
   constructor(private http: HttpClient) {}
   

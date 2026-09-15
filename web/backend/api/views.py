@@ -53,8 +53,22 @@ class TrackingListView(APIView):
                 if should_notify:
                     await send_tg_notification(
                         chat_id=request.user.telegram_id, 
-                        text='Tracking created!'
+                        text=   f"<b>I found cheap tickets for you right now!</b>\n\n"
+                                f"Route: {new_tracking.origin_name} ➔ {new_tracking.destination_name}\n"
+                                f"Date: {new_tracking.departure_date}\n"
+                                f"Current price: <b>{current_price} ₸</b>\n"
+                                f"Your target: {new_tracking.target_price} ₸",
                     )
+                else: 
+                    await send_tg_notification(
+                                            chat_id=request.user.telegram_id, 
+                                            text=   f"Current minimum price right now is <b>{current_price} ₸</b>.\n"
+                                            f"We will notify you when price drops to or below {new_tracking.target_price} ₸.")
+            else:
+                await send_tg_notification(
+                    chat_id=request.user.telegram_id,
+                    text='Could not find active tickets for these parameters at the moment'
+                )
                 await session.commit()
                 await session.refresh(new_tracking)
 
