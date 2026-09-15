@@ -31,7 +31,12 @@ SECRET_KEY = "django-insecure-4%tt2-g5oez3o%m9a*c^y@unu1e1&h!^+0ju@4ezr+u+9(j$w9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'plain-roses-rest.loca.lt',
+    '.loca.lt',  
+]
 
 
 # Application definition
@@ -62,9 +67,23 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
     "http://127.0.0.1:4200",
+    'https://satisfy-bonding-tripping.ngrok-free.dev'
 ]
 
 ROOT_URLCONF = "config.urls"
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'x-telegram-init-data',
+]
 
 TEMPLATES = [
     {

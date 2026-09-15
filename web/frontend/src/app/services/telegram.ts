@@ -10,7 +10,7 @@ export class TelegramService {
       this.tg.ready();
       this.tg.expand();
     }
-    console.warn('Errpr');
+    else {console.warn('Error')};
 
   }
   get initData(): string {
