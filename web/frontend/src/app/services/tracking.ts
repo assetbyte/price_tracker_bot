@@ -23,7 +23,7 @@ export interface Tracking {
 })
 export class TrackingService {
 
-  private apiUrl = 'https://brave-masks-sip.loca.lt/api/trackings/';
+  private apiUrl = 'https://twelve-donkeys-float.loca.lt/api/trackings/';
 
   constructor(private http: HttpClient) {}
   
@@ -39,5 +39,7 @@ export class TrackingService {
   deleteTracking(id: number, userId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}${id}/?user_id=${userId}`)
   }
+
+  
 
 }

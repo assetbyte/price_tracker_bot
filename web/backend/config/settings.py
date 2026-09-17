@@ -34,7 +34,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'plain-roses-rest.loca.lt',
+    'twelve-donkeys-float.loca.lt',
     '.loca.lt',  
 ]
 

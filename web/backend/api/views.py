@@ -78,7 +78,6 @@ class TrackingListView(APIView):
 
 class TrackingDetailView(APIView):
     authentication_classes = [TelegramAuthentication]
-    permission_classes = [IsAuthenticated]
 
     async def delete(self, request, pk):
         user_id = request.user.telegram_id
