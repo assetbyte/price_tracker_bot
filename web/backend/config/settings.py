@@ -34,7 +34,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'twelve-donkeys-float.loca.lt',
+    'great-gifts-camp.loca.lt',
     '.loca.lt',  
 ]
 
@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "api",
 ]
+
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",

@@ -8,6 +8,8 @@ from app.crud.tracking import (
     create_tracking,
     deactivate_tracking,
     get_all_active_trackings,
+    get_user_active_trackings,
+    toggle_tracking_active
 )
 from app.db.session import AsyncSessionLocal
 from .serializers import TrackingCreateSerializer, TrackingSerializer
@@ -16,12 +18,13 @@ from .authentication import TelegramAuthentication
 
 
 class TrackingListView(APIView):
-    
     authentication_classes = [TelegramAuthentication]
-    
+    permission_classes = [IsAuthenticated]
+
     async def get(self, request):
-        async with AsyncSessionLocal() as session:            
-            trackings = await get_all_active_trackings(session)
+        user_id = int(request.user.telegram_id)
+        async with AsyncSessionLocal() as session:
+            trackings = await get_user_active_trackings(session, user_id=user_id)
 
         serializer = TrackingSerializer(trackings, many=True)
         return Response(serializer.data)
@@ -95,3 +98,28 @@ class TrackingDetailView(APIView):
             )
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    
+    async def patch(self, request, pk):
+        user_id  = request.user.telegram_id
+        print(f"Client requesting tracking_id={pk} for user_id={user_id}")
+        is_active = request.data.get('is_active')
+        if is_active is None:
+            return Response(
+                {'detail': 'Field "is_active" is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        async with AsyncSessionLocal() as session:
+            paused = await toggle_tracking_active(
+                session=session,
+                tracking_id=pk,
+                user_id=user_id,
+                is_active=is_active
+            )
+        if not paused:
+            return Response(
+                {'detail': 'Tracking not found or not owned by user'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        serializer = TrackingSerializer(paused)
+        return Response(serializer.data, status=status.HTTP_200_OK)

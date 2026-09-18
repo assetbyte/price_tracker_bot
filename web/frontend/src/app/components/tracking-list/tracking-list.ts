@@ -3,35 +3,47 @@ import { TrackingService, Tracking } from '../../services/tracking';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
-
 @Component({
   selector: 'app-tracking-list',
   imports: [CommonModule, RouterLink],
   templateUrl: './tracking-list.html',
   styleUrl: './tracking-list.css',
 })
-export class TrackingList {
-  trackings: Tracking[] = []
+export class TrackingList implements OnInit {
+  trackings: Tracking[] = [];
 
-  constructor(private cdr: ChangeDetectorRef, private trackingService: TrackingService) {}
+  constructor(
+    private cdr: ChangeDetectorRef, 
+    private trackingService: TrackingService
+  ) {}
 
-  ngOnInit() : void {
-    this.loadTrackings()
-    console.log(this.trackings)
+  ngOnInit(): void {
+    this.loadTrackings();
   }
 
-  loadTrackings() : void {
+  loadTrackings(): void {
     this.trackingService.getActiveTrackings().subscribe({
       next: (data: Tracking[]) => {
         this.trackings = data;
-        console.log("Ac", this.trackings)
-        this.cdr.detectChanges()
+        this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.log("Error occured", err)
-      }
-    })
+      error: (err) => console.error("Error occurred", err)
+    });
   }
-  
 
+
+  togglePause(item: Tracking): void {
+    if (!item.id) return;
+    const request$ = item.is_active ? this.trackingService.pauseTracking(item.id): this.trackingService.resumeTracking(item.id);
+
+    request$.subscribe({
+      next: (updated: Tracking) => {
+        item.is_active = updated.is_active;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Failed to toggle tracking status', err)
+    });
+  }
+
+  
 }

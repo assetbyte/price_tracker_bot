@@ -10,6 +10,7 @@ class TrackingSerializer(serializers.Serializer):
     target_price = serializers.DecimalField(
       max_digits=10, decimal_places=2, required=False, allow_null=True
     )
+    is_active = serializers.BooleanField(default=True)
     transport_type = serializers.CharField(max_length=255)
     price = serializers.DecimalField(
         max_digits=10, decimal_places=2, required=False, allow_null=True, default=None

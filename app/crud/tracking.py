@@ -100,27 +100,22 @@ async def deactivate_tracking(
         await session.commit()
         return True
     return False
-
-
-async def toggle_tracking_active(
-    session: AsyncSession, 
-    tracking_id: int,
-    user_id: int,
-    is_active: bool,
-) -> Tracking | None:
-    statement = select(Tracking).where(
-            Tracking.id == tracking_id,
-            Tracking.user_id == user_id
-        )
-    
-    result = await session.execute(statement)
-    tracking = result.scalar_one_or_none()
+async def toggle_tracking_active(session: AsyncSession, tracking_id: int, user_id: int, is_active: bool):
+    stmt = select(Tracking).where(Tracking.id == tracking_id, Tracking.user_id == user_id)
+    tracking = (await session.execute(stmt)).scalar_one_or_none()
     
     if tracking:
         tracking.is_active = is_active
         await session.commit()
         await session.refresh(tracking)
         return tracking
-    return None 
-        
-        
+
+    check_stmt = select(Tracking).where(Tracking.id == tracking_id)
+    exists = (await session.execute(check_stmt)).scalar_one_or_none()
+    
+    if exists:
+        print(f"[DEBUG 404] Tracking {tracking_id} owner is {exists.user_id} (type: {type(exists.user_id)}), but Auth user is {user_id} (type: {type(user_id)})")
+    else:
+        print(f"[DEBUG 404] Tracking {tracking_id} DOES NOT exist in DB")
+
+    return None
