@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy import delete
 from app.db.base import Tracking
 from datetime import date
 from decimal import Decimal
@@ -83,23 +84,23 @@ async def get_user_active_trackings(
     return result.scalars().all()
 
 
-async def deactivate_tracking(
+async def delete_tracking(
     session: AsyncSession,
-    tracking_id: int,
     user_id: int,
-) -> bool:
-    result = await session.execute(
-        select(Tracking).where(
-            Tracking.id == tracking_id,
-            Tracking.user_id == user_id
-        )
-    )
+    tracking_id: int,
+    ) -> bool:
+    stmt = select(Tracking).where(Tracking.id == tracking_id, Tracking.user_id == user_id) 
+    result = await session.execute(stmt)
     tracking = result.scalar_one_or_none()
+    
     if tracking:
-        tracking.is_active = False
+        session.delete(tracking)
         await session.commit()
         return True
     return False
+        
+        
+
 async def toggle_tracking_active(session: AsyncSession, tracking_id: int, user_id: int, is_active: bool):
     stmt = select(Tracking).where(Tracking.id == tracking_id, Tracking.user_id == user_id)
     tracking = (await session.execute(stmt)).scalar_one_or_none()
