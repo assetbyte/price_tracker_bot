@@ -7,6 +7,7 @@ from app.services.checker import process_tracking_checking
 from app.crud.tracking import (
     create_tracking,
     deactivate_tracking,
+    delete_tracking,
     get_all_active_trackings,
     get_user_active_trackings,
     toggle_tracking_active
@@ -85,13 +86,13 @@ class TrackingDetailView(APIView):
     async def delete(self, request, pk):
         user_id = request.user.telegram_id
         async with AsyncSessionLocal() as session:
-            deactivated = await deactivate_tracking(
+            deleted = await delete_tracking(
                 session=session,
                 tracking_id=pk,
                 user_id=user_id
             )
 
-        if not deactivated:
+        if not deleted:
             return Response(
                 {'detail': 'Tracking not found or not owned by user.'},
                 status=status.HTTP_404_NOT_FOUND,

@@ -45,5 +45,20 @@ export class TrackingList implements OnInit {
     });
   }
 
+  deleteTracking(item: Tracking): void {
+    if (!item.id) return;
+
+    this.trackingService.deleteTracking(item.id).subscribe({
+      next: (data) => {
+        this.trackings = this.trackings.filter(t => t.id !== item.id);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error("Something went wrong")
+      }
+    })
+
+  }
+
   
 }

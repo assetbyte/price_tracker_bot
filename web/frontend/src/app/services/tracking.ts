@@ -36,8 +36,8 @@ export class TrackingService {
     return this.http.post<Tracking>(this.apiUrl, data)
   }
 
-  deleteTracking(id: number, userId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}${id}/?user_id=${userId}`)
+  deleteTracking(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}${id}/`)
   }
 
   pauseTracking(id: number): Observable<Tracking> {
