@@ -78,28 +78,34 @@ class TrackingListView(APIView):
         output_serializer = TrackingSerializer(new_tracking)
         return Response(output_serializer.data, status=status.HTTP_201_CREATED)
 
-
 class TrackingDetailView(APIView):
     authentication_classes = [TelegramAuthentication]
 
     async def delete(self, request, pk):
         user_id = request.user.telegram_id
+        
+        try:
+            tracking_id = int(pk)
+        except (ValueError, TypeError):
+            return Response(
+                {'detail': 'Invalid tracking ID'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         async with AsyncSessionLocal() as session:
             deleted = await delete_tracking(
                 session=session,
-                tracking_id=pk,
-                user_id=user_id
+                tracking_id=tracking_id,
+                user_id=user_id,
             )
 
         if not deleted:
             return Response(
-                {'detail': 'Tracking not found or not owned by user.'},
+                {'detail': 'Tracking not found or not owned by user'},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
-    
     async def patch(self, request, pk):
         user_id  = request.user.telegram_id
         print(f"Client requesting tracking_id={pk} for user_id={user_id}")
