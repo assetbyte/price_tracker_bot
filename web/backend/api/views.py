@@ -6,7 +6,6 @@ from rest_framework.permissions import IsAuthenticated
 from app.services.checker import process_tracking_checking
 from app.crud.tracking import (
     create_tracking,
-    deactivate_tracking,
     delete_tracking,
     get_all_active_trackings,
     get_user_active_trackings,

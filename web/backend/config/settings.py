@@ -73,6 +73,15 @@ CORS_ALLOWED_ORIGINS = [
 
 ROOT_URLCONF = "config.urls"
 
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
