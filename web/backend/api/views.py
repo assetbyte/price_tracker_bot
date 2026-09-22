@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
+from app.crud.price_history import get_price_history
 from app.services.checker import process_tracking_checking
 from app.crud.tracking import (
     create_tracking,
@@ -129,3 +130,21 @@ class TrackingDetailView(APIView):
             )
         serializer = TrackingSerializer(paused)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class PriceHistoryView(APIView):
+    authentication_classes = [TelegramAuthentication]
+
+    async def get(self, request, pk):
+        async with AsyncSessionLocal() as session:
+            history = await get_price_history(session, tracking_id=int(pk))
+        
+        data = [
+            {
+                "time": record.time.isoformat(),
+                "price": float(record.price),
+                "carrier": record.carrier
+            }
+            for record in history
+        ]
+        
+        return Response(data) 
