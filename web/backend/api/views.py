@@ -119,7 +119,7 @@ class TrackingDetailView(APIView):
         async with AsyncSessionLocal() as session:
             paused = await toggle_tracking_active(
                 session=session,
-                tracking_id=pk,
+                tracking_id=int(pk),
                 user_id=user_id,
                 is_active=is_active
             )

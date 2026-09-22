@@ -18,6 +18,12 @@ export interface Tracking {
   created_at?: string;
 }
 
+export interface PriceHistory {
+  time: string;
+  price: number;
+  carrier: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -46,6 +52,10 @@ export class TrackingService {
 
   resumeTracking(id: number): Observable<Tracking> {
     return this.http.patch<Tracking>(`${this.apiUrl}${id}/`, { is_active: true });
+  }
+
+  getPriceHistory(id: number): Observable<PriceHistory[]> {
+    return this.http.get<PriceHistory[]>(`${this.apiUrl}${id}/price-history/`);
   }
 
   
