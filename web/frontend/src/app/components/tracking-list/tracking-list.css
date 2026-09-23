@@ -9,9 +9,10 @@
 .dashboard-container {
   display: flex;
   min-height: 100vh;
+  flex-direction: row;
 }
 
-/* Sidebar Styling */
+/* ==================== Sidebar and Navigation ==================== */
 .sidebar {
   width: 240px;
   background-color: #ffffff;
@@ -19,6 +20,7 @@
   padding: 24px 16px;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
 }
 
 .logo h2 {
@@ -50,10 +52,11 @@
   color: #2b6cb0;
 }
 
-/* Main Content Area */
+/* ==================== Main Content Area ==================== */
 .main-content {
   flex: 1;
   padding: 32px 48px;
+  min-width: 0; 
 }
 
 .header {
@@ -61,6 +64,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 28px;
+  gap: 16px;
 }
 
 .header h1 {
@@ -76,7 +80,7 @@
   font-size: 14px;
 }
 
-/* Cards Layout */
+/* ==================== Cards Layout ==================== */
 .trackings-list {
   display: flex;
   flex-direction: column;
@@ -95,6 +99,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
 }
 
 .route-info {
@@ -105,21 +110,29 @@
 
 .transport-icon {
   font-size: 20px;
+  flex-shrink: 0;
 }
 
 .route-info h3 {
   margin: 0;
   font-size: 18px;
   color: #2d3748;
+  word-break: break-word;
 }
 
 .status-badge {
   font-size: 13px;
   font-weight: 600;
-  color: #38a169;
-  background-color: #f0fff4;
+  color: #e53e3e;
+  background-color: #fff5f5;
   padding: 4px 10px;
   border-radius: 20px;
+  white-space: nowrap;
+
+  &.active {
+    color: #38a169;
+    background-color: #f0fff4;
+  }
 }
 
 .divider {
@@ -170,6 +183,7 @@
   font-size: 12px;
   font-weight: normal;
   margin-left: 6px;
+  display: inline-block;
 }
 
 /* Card Footer */
@@ -179,6 +193,7 @@
   align-items: center;
   padding-top: 12px;
   border-top: 1px dashed #edf2f7;
+  gap: 12px;
 }
 
 .created-at {
@@ -192,7 +207,7 @@
 }
 
 /* Buttons */
-.btn {
+.btn, .btn-delete {
   padding: 8px 16px;
   border-radius: 6px;
   border: none;
@@ -200,32 +215,151 @@
   font-size: 14px;
   cursor: pointer;
   transition: background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px; 
 }
 
 .btn-primary {
   background-color: #3182ce;
   color: #ffffff;
-}
 
-.btn-primary:hover {
-  background-color: #2b6cb0;
+  &:hover {
+    background-color: #2b6cb0;
+  }
 }
 
 .btn-secondary {
   background-color: #edf2f7;
   color: #4a5568;
+
+  &:hover {
+    background-color: #e2e8f0;
+  }
 }
 
-.btn-secondary:hover {
-  background-color: #e2e8f0;
+.btn-success {
+  background-color: #f0fff4;
+  color: #38a169;
+  border: 1px solid #c6f6d5;
+
+  &:hover {
+    background-color: #c6f6d5;
+  }
 }
 
-.btn-danger {
+.btn-delete, .btn-danger {
   background-color: #fff5f5;
   color: #e53e3e;
   border: 1px solid #fed7d7;
+
+  &:hover {
+    background-color: #fed7d7;
+  }
 }
 
-.btn-danger:hover {
-  background-color: #fed7d7;
+/* ==================== MEDIA QUERIES  ==================== */
+
+@media (max-width: 992px) {
+  .main-content {
+    padding: 24px 20px;
+  }
+
+  .sidebar {
+    width: 200px;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+    padding-bottom: 70px;
+  }
+
+  
+  .sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 60px;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 8px;
+    border-right: none;
+    border-top: 1px solid #e2e8f0;
+    z-index: 1000;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .logo {
+    display: none;
+  }
+
+  .nav-menu {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    gap: 0;
+  }
+
+  .nav-item {
+    padding: 8px 12px;
+    font-size: 12px;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .main-content {
+    padding: 16px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .btn-primary {
+      width: 100%;
+    }
+  }
+
+  .header h1 {
+    font-size: 22px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .route-info h3 {
+    font-size: 16px;
+  }
+
+  
+  .card-body {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  
+  .card-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+
+    .actions {
+      width: 100%;
+
+      .btn, .btn-delete {
+        flex: 1;
+      }
+    }
+
+    .created-at {
+      text-align: center;
+    }
+  }
 }

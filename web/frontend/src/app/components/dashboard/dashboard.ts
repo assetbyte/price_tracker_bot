@@ -103,7 +103,7 @@ export class Dashboard implements OnInit, OnDestroy {
             backgroundColor: gradient,
             fill: true,
             tension: 0.3,
-            pointRadius: 3,
+            pointRadius: 2,
             pointBackgroundColor: '#2481cc',
           },
         ],
