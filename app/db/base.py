@@ -98,3 +98,20 @@ class PriceHistory(Base):
     __table_args__ = (
         Index("idx_price_history_tracking_time", "tracking_id", text("time DESC")),
     )
+    
+    
+    
+class Station(Base):
+    __tablename__ = "stations"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
+    code: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    is_popular: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default="false"
+    )
+
+    __table_args__ = (
+        Index("idx_stations_name_trgm", "name"),
+        Index("idx_stations_is_popular", "is_popular"),
+    )
