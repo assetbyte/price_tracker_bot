@@ -14,3 +14,4 @@ async def get_popular_stations_from_db():
         statement = select(Station.name).where(Station.is_popular.is_(True))
         result = await session.execute(statement)
         popular_stations = list(result.scalars().all())
+        return popular_stations

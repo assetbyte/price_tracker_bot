@@ -10,6 +10,7 @@ from app.db.base import Tracking, User
 from app.db.session import AsyncSessionLocal
 from app.services.checker import process_tracking_checking
 from app.bot.keyboards.tracking_kb import get_car_types, get_popular_stations, get_quick_date
+from app.services.stations import get_popular_stations_from_db, get_station_code_by_name
 router = Router()
 STATION_CHOICES = {
     "астана": "2708001",
@@ -26,33 +27,40 @@ class FormTracking(StatesGroup):
 
 from sqlalchemy import delete
 
-async def get_station_code(station_name: str) -> str | None:
-    clean_name = station_name.strip().lower()
-    return STATION_CHOICES.get(clean_name)
+# async def get_station_code(station_name: str) -> str | None:
+#     clean_name = station_name.strip().lower()
+#     return STATION_CHOICES.get(clean_name)
 
 @router.message(Command("new_tracking"))
 async def start_tracking_creation(message: types.Message, state: FSMContext):
     await state.set_state(FormTracking.origin)
+    
+    popular_names = await get_popular_stations_from_db()
+    
     await message.answer(
-        "Enter name of a departure station (or select from popular):",
-        reply_markup=get_popular_stations()
-    )
+      "Enter name of a departure station (or select from popular):",
+        reply_markup=get_popular_stations(popular_names),
+  )
 
 @router.message(FormTracking.origin)
 async def process_origin(message: types.Message, state: FSMContext):
     origin_name = message.text.strip()
-    origin_code = await get_station_code(origin_name)
+    origin_code = await get_station_code_by_name(origin_name)
     await state.update_data(origin_name=origin_name, origin_code=origin_code)
     await state.set_state(FormTracking.destination)
+    
+    popular_names = await get_popular_stations_from_db()
+    
     await message.answer(
         "Enter name of the arrival station (or select from popular):",
-        reply_markup=get_popular_stations()
+        reply_markup=get_popular_stations(popular_names
+                                          )
     )
 
 @router.message(FormTracking.destination)
 async def process_destination(message: types.Message, state: FSMContext):
     destination_name = message.text.strip()
-    destination_code = await get_station_code(destination_name)
+    destination_code = await get_station_code_by_name(destination_name)
     
     await state.update_data(destination_name=destination_name, destination_code=destination_code)
     await state.set_state(FormTracking.departure_date)
@@ -215,7 +223,7 @@ async def process_edit_tracking_id(message: types.Message, state: FSMContext):
 @router.message(FormEditTracking.origin)
 async def process_edit_origin(message: types.Message, state: FSMContext):
     origin_name = message.text.strip()
-    origin_code = await get_station_code(origin_name)
+    origin_code = await get_station_code_by_name(origin_name)
     await state.update_data(origin_name=origin_name, origin_code=origin_code)
     await state.set_state(FormEditTracking.destination)
     await message.answer("Enter new arrival station name:")
@@ -223,7 +231,7 @@ async def process_edit_origin(message: types.Message, state: FSMContext):
 @router.message(FormEditTracking.destination)
 async def process_edit_destination(message: types.Message, state: FSMContext):
     destination_name = message.text.strip()
-    destination_code = await get_station_code(destination_name)
+    destination_code = await get_station_code_by_name(destination_name)
     
     await state.update_data(destination_name=destination_name, destination_code=destination_code)
     await state.set_state(FormEditTracking.departure_date)

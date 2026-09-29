@@ -32,3 +32,5 @@ node_modules/
 .angular/
 dist/
 .env
+
+python-scripts/

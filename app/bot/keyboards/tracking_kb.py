@@ -1,31 +1,24 @@
 from datetime import datetime, timedelta, timezone
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 
-def get_popular_stations() -> ReplyKeyboardMarkup:
+def get_popular_stations(station_names: list[str]) -> ReplyKeyboardMarkup:
+    keyboard_buttons = []
+    row = []
+    for name in station_names:
+        row.append(KeyboardButton(text=name))
+        if len(row) == 3:
+            keyboard_buttons.append(row)
+            row = []
+    if row: 
+        keyboard_buttons.append(row)
+    keyboard_buttons.append([KeyboardButton(text="/cancel")])
+    
     return ReplyKeyboardMarkup(
-        keyboard=[
-            [
-                KeyboardButton(text="Астана"),
-                KeyboardButton(text="Алматы"),
-                KeyboardButton(text="Шымкент"),
-            ],
-            [
-                KeyboardButton(text="Караганда"),
-                KeyboardButton(text="Актобе"),
-                KeyboardButton(text="Павлодар"),
-            ],
-            [
-                KeyboardButton(text="Атырау"),
-                KeyboardButton(text="Тараз"),
-                KeyboardButton(text="Усть-Каменогорск"),
-            ],
-            [
-                KeyboardButton(text="/cancel")
-            ]
-        ],
-        resize_keyboard=True,
-        one_time_keyboard=True
-    )
+      keyboard=keyboard_buttons,
+      resize_keyboard=True,
+      one_time_keyboard=True,
+  )
+    
     
 def get_quick_date() -> ReplyKeyboardMarkup:
     kz_timezone = timezone(timedelta(hours=5))
