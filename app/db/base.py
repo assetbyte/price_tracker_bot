@@ -105,7 +105,7 @@ class Station(Base):
     __tablename__ = "stations"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
     code: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     is_popular: Mapped[bool] = mapped_column(
         Boolean, default=False, server_default="false"
