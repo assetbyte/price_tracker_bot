@@ -12,11 +12,7 @@ from app.services.checker import process_tracking_checking
 from app.bot.keyboards.tracking_kb import get_car_types, get_popular_stations, get_quick_date
 from app.services.stations import get_popular_stations_from_db, get_station_code_by_name
 router = Router()
-STATION_CHOICES = {
-    "астана": "2708001",
-    "алматы": "2700000",
-    "шымкент": "2700770",
-}
+
 
 class FormTracking(StatesGroup):
   origin = State()

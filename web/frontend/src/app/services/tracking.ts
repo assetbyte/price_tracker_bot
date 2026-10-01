@@ -29,7 +29,7 @@ export interface PriceHistory {
 })
 export class TrackingService {
 
-  private apiUrl = 'https://great-gifts-camp.loca.lt/api/trackings/';
+  private apiUrl = 'https://silver-dogs-ask.loca.lt/api/trackings/';
 
   constructor(private http: HttpClient) {}
   

@@ -28,7 +28,24 @@ services:
     volumes:
       - redis_data:/data
 
-      
+
+  bot: 
+    build: . # собрать кастомный образ из текущей директории 
+    container_name: price_tracker_bot_app
+    restart: always
+    env_file:
+      - .env
+    environment:
+    - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    - REDIS_URL=redis://redis:6379/0
+
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+    
 volumes:
   db_data:
   redis_data:

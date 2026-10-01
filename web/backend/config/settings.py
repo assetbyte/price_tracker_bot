@@ -34,7 +34,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'great-gifts-camp.loca.lt',
+    'silver-dogs-ask.loca.lt',
     '.loca.lt',  
 ]
 

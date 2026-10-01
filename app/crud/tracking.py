@@ -94,7 +94,7 @@ async def delete_tracking(
     tracking = result.scalar_one_or_none()
     
     if tracking:
-        session.delete(tracking)
+        await session.delete(tracking)
         await session.commit()
         return True
     return False
