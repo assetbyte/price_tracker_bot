@@ -83,22 +83,24 @@ async def get_user_active_trackings(
     )
     return result.scalars().all()
 
+from sqlalchemy import delete
 
 async def delete_tracking(
     session: AsyncSession,
     user_id: int,
     tracking_id: int,
-    ) -> bool:
-    stmt = select(Tracking).where(Tracking.id == tracking_id, Tracking.user_id == user_id) 
-    result = await session.execute(stmt)
-    tracking = result.scalar_one_or_none()
+) -> bool:
+    stmt = (
+        delete(Tracking).where(
+            Tracking.id == tracking_id,
+            Tracking.user_id == user_id
+        )
+    )
     
-    if tracking:
-        await session.delete(tracking)
-        await session.commit()
-        return True
-    return False
-        
+    result = await session.execute(stmt)
+    await session.commit()
+    
+    return result.rowcount > 0
         
 
 async def toggle_tracking_active(session: AsyncSession, tracking_id: int, user_id: int, is_active: bool):
