@@ -3,6 +3,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
+from sqlalchemy import select
+from app.db.base import Station 
+
 from app.crud.price_history import get_price_history
 from app.services.checker import process_tracking_checking
 from app.crud.tracking import (
@@ -148,3 +151,23 @@ class PriceHistoryView(APIView):
         ]
         
         return Response(data) 
+    
+    
+    
+class StationSearchView(APIView):
+    async def get(self, request): 
+        query = request.query_params.get('query', '').strip()
+        
+        async with AsyncSessionLocal() as session: 
+            # if query params are not defined return popular stations 
+            if not query:
+                statement = select(Station).where(Station.is_popular.is_(True)).limit(15)
+            else:
+                statement = select(Station).where(Station.name.ilike(f"%{query}%")).limit(10)
+                
+
+            result = await session.execute(statement)
+            stations = result.scalars().all()
+            
+        data = [{"name": s.name, "code": s.code} for s in stations]
+        return Response(data)
