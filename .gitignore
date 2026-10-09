@@ -34,3 +34,4 @@ dist/
 .env
 
 python-scripts/
+bugs.txt

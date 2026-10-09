@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from decimal import Decimal
+from sqlite3 import IntegrityError
 from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
@@ -90,7 +91,6 @@ async def process_car_type(message: types.Message, state: FSMContext):
 
 
 
-
 @router.message(FormTracking.target_price)
 async def process_target_price(message: types.Message, state: FSMContext):
     try:
@@ -114,22 +114,33 @@ async def process_target_price(message: types.Message, state: FSMContext):
                 await state.clear()
                 return
             
+            # 1. Поиск по ключам уникального индекса (БЕЗ target_price и car_type)
             check_statement = select(Tracking).where(
                 Tracking.user_id == db_user.id,
                 Tracking.origin_code == user_data["origin_code"],
                 Tracking.destination_code == user_data["destination_code"],
                 Tracking.departure_date == user_data["departure_date"],
-                Tracking.car_type == user_data["car_type"],
-                Tracking.target_price == target_price,
+                Tracking.transport_type == "train",
             )
-            existing_tracking = await session.execute(check_statement)
-            existing_tracking = existing_tracking.scalar_one_or_none()
+            result = await session.execute(check_statement)
+            existing_tracking = result.scalar_one_or_none()
+            
+            target_tracking = None
+
             if existing_tracking:
-                await message.answer("You already have a tracking with these parameters.")
-                await state.clear()
-                return
-              
+                if existing_tracking.target_price == target_price and existing_tracking.car_type == user_data["car_type"]:
+                    await message.answer("You already have a tracking with these parameters.")
+                    await state.clear()
+                    return
+                else: 
+                    existing_tracking.target_price = target_price
+                    existing_tracking.car_type = user_data["car_type"]
+                    existing_tracking.is_active = True
+                    await session.commit()
+                    target_tracking = existing_tracking
+                    await message.answer("Tracking successfully updated with new parameters!")
             else: 
+                
                 new_tracking = Tracking(
                     user_id=db_user.id,  
                     origin_code=user_data["origin_code"],
@@ -143,40 +154,47 @@ async def process_target_price(message: types.Message, state: FSMContext):
                     is_active=True,
                 )
                 session.add(new_tracking)
-                await session.commit()
-                await session.refresh(new_tracking)
-                
-                await state.clear()
-                
-                await message.answer("Tracking successfully created!")
+                try:
+                    await session.commit()
+                    await session.refresh(new_tracking)
+                    target_tracking = new_tracking
+                    await message.answer("Tracking successfully created!")
+                except IntegrityError:
+                    await session.rollback()
+                    await state.clear()
+                    await message.answer("You are already tracking this route!")
+                    return
+
+            await state.clear()
             
-            should_notify, current_price = await process_tracking_checking(
-                session=session,
-                tracking_info=new_tracking
-            )
-            
-            if current_price is not None:
-                new_tracking.price = current_price  
-                await session.commit()
-                if should_notify:
-                    await message.answer(
-                        f"<b>I found cheap tickets for you right now!</b>\n\n"
-                        f"Route: {new_tracking.origin_name} ➔ {new_tracking.destination_name}\n"
-                        f"Date: {new_tracking.departure_date}\n"
-                        f"Current price: <b>{current_price} ₸</b>\n"
-                        f"Your target: {target_price} ₸",
-                        parse_mode="HTML"
-                    )
+            if target_tracking:
+                should_notify, current_price = await process_tracking_checking(
+                    session=session,
+                    tracking_info=target_tracking
+                )
+                
+                if current_price is not None:
+                    target_tracking.price = current_price  
+                    await session.commit()
+                    if should_notify:
+                        await message.answer(
+                            f"<b>I found cheap tickets for you right now!</b>\n\n"
+                            f"Route: {target_tracking.origin_name} ➔ {target_tracking.destination_name}\n"
+                            f"Date: {target_tracking.departure_date}\n"
+                            f"Current price: <b>{current_price} ₸</b>\n"
+                            f"Your target: {target_price} ₸",
+                            parse_mode="HTML"
+                        )
+                    else:
+                        await message.answer(
+                            f"Current minimum price right now is <b>{current_price} ₸</b>.\n"
+                            f"We will notify you when price drops to or below {target_price} ₸.",
+                            parse_mode="HTML"
+                        )
                 else:
                     await message.answer(
-                        f"Current minimum price right now is <b>{current_price} ₸</b>.\n"
-                        f"We will notify you when price drops to or below {target_price} ₸.",
-                        parse_mode="HTML"
+                        "Could not find active tickets for these parameters at the moment"
                     )
-            else:
-                await message.answer(
-                    "Could not find active tickets for these parameters at the moment"
-                )
 
     except ValueError:
         await message.answer("Invalid price format")
