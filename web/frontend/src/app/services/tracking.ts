@@ -11,7 +11,7 @@ export interface Tracking {
   destination_name: string;
   departure_date: string;
   transport_type: string;
-  price?: number | null;
+  price: number | null;
   target_price: number;
   car_type: string;
   is_active?: boolean;

@@ -73,8 +73,8 @@ class TrackingListView(APIView):
                     chat_id=request.user.telegram_id,
                     text='Could not find active tickets for these parameters at the moment'
                 )
-                await session.commit()
-                await session.refresh(new_tracking)
+            await session.commit()
+            await session.refresh(new_tracking)
 
         output_serializer = TrackingSerializer(new_tracking)
         return Response(output_serializer.data, status=status.HTTP_201_CREATED)
