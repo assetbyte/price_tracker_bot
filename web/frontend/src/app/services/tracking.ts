@@ -2,6 +2,18 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+
+export interface CreateTrackingPayload {
+  origin_code: string;
+  destination_code: string;
+  origin_name: string;
+  destination_name: string;
+  departure_date: string;
+  car_type: string;
+  target_price: number | string;
+}
+
+
 export interface Tracking {
   id?: number;
   user_id: number;
@@ -29,7 +41,7 @@ export interface PriceHistory {
 })
 export class TrackingService {
 
-  private apiUrl = 'https://silver-dogs-ask.loca.lt/api/trackings/';
+  private apiUrl = 'https://major-clubs-play.loca.lt/api/trackings/';
 
   constructor(private http: HttpClient) {}
   
@@ -38,10 +50,9 @@ export class TrackingService {
     return this.http.get<Tracking[]>(this.apiUrl);
   }
 
-  createTracking(data: Tracking) :  Observable<Tracking> {
-    return this.http.post<Tracking>(this.apiUrl, data)
+  createTracking(data: CreateTrackingPayload): Observable<Tracking> {
+    return this.http.post<Tracking>(this.apiUrl, data);
   }
-
   deleteTracking(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}${id}/`)
   }
