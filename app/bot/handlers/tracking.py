@@ -12,6 +12,7 @@ from app.db.session import AsyncSessionLocal
 from app.services.checker import process_tracking_checking
 from app.bot.keyboards.tracking_kb import get_car_types, get_popular_stations, get_quick_date
 from app.services.stations import get_popular_stations_from_db, get_station_code_by_name
+from app.services.station_repository import fuzzy_search_station
 router = Router()
 
 
@@ -42,24 +43,40 @@ async def start_tracking_creation(message: types.Message, state: FSMContext):
 @router.message(FormTracking.origin)
 async def process_origin(message: types.Message, state: FSMContext):
     origin_name = message.text.strip()
-    origin_code = await get_station_code_by_name(origin_name)
-    await state.update_data(origin_name=origin_name, origin_code=origin_code)
+    stations = await fuzzy_search_station(origin_name)
+    if not stations:
+        await message.answer("Station that you looking for is not found. Try to enter it again or choose from the list")
+        return 
+    best_match = stations[0]
+    origin_name_str = str(best_match.name)
+    
+    if origin_name.lower() != origin_name_str.lower():
+        await message.answer(f"Perhaps, you meant: **{origin_name_str}**?")
+    origin_code = await get_station_code_by_name(origin_name_str)
+    await state.update_data(origin_name=origin_name_str, origin_code=origin_code)
     await state.set_state(FormTracking.destination)
     
     popular_names = await get_popular_stations_from_db()
     
     await message.answer(
         "Enter name of the arrival station (or select from popular):",
-        reply_markup=get_popular_stations(popular_names
-                                          )
+        reply_markup=get_popular_stations(popular_names)
     )
 
 @router.message(FormTracking.destination)
 async def process_destination(message: types.Message, state: FSMContext):
     destination_name = message.text.strip()
-    destination_code = await get_station_code_by_name(destination_name)
-    
-    await state.update_data(destination_name=destination_name, destination_code=destination_code)
+    stations = await fuzzy_search_station(destination_name)
+    if not stations:
+            await message.answer("Station that you looking for is not found. Try to enter it again or choose from the list")
+            return 
+    best_match = stations[0]
+    destination_name_str = str(best_match.name)
+    if destination_name.lower() != destination_name_str.lower():
+        await message.answer(f"Perhaps, you meant: **{destination_name_str}**?")
+    destination_code = await get_station_code_by_name(destination_name_str)
+        
+    await state.update_data(destination_name=destination_name_str, destination_code=destination_code)
     await state.set_state(FormTracking.departure_date)
     await message.answer(
         'Enter departure date in "DD-MM-YYYY" format:',
