@@ -13,7 +13,13 @@ from app.services.checker import process_tracking_checking
 from app.bot.keyboards.tracking_kb import get_car_types, get_popular_stations, get_quick_date
 from app.services.stations import get_popular_stations_from_db, get_station_code_by_name
 from app.services.station_repository import fuzzy_search_station
+
 router = Router()
+
+
+class ConfirmationState(StatesGroup):
+    waiting_for_origin_confirmation = State()
+    waiting_for_destination_confirmation = State()
 
 
 class FormTracking(StatesGroup):
@@ -50,11 +56,38 @@ async def process_origin(message: types.Message, state: FSMContext):
     best_match = stations[0]
     origin_name_str = str(best_match.name)
     
-    if origin_name.lower() != origin_name_str.lower():
-        await message.answer(f"Perhaps, you meant: **{origin_name_str}**?")
-    origin_code = await get_station_code_by_name(origin_name_str)
-    await state.update_data(origin_name=origin_name_str, origin_code=origin_code)
-    await state.set_state(FormTracking.destination)
+    if origin_name.lower() == origin_name_str.lower():
+        origin_code = await get_station_code_by_name(origin_name_str)
+        await state.update_data(origin_name=origin_name_str, origin_code=origin_code)
+        await state.set_state(FormTracking.destination)
+
+        popular_names = await get_popular_stations_from_db()
+        await message.answer(
+            "Enter name of the arrival station (or select from popular):",
+            reply_markup=get_popular_stations(popular_names),
+        )
+        return 
+    else:
+        await state.update_data(temp_origin_name=origin_name_str)
+        await state.set_state(ConfirmationState.waiting_for_origin_confirmation)
+
+        confirmation_kb = types.InlineKeyboardMarkup(inline_keyboard=[[
+            types.InlineKeyboardButton(
+                text="Yes, correct", callback_data="confirm_origin_yes"
+            ),
+            types.InlineKeyboardButton(
+                text="No, re-enter", callback_data="confirm_origin_no"
+            ),
+        ]])
+
+    await message.answer(
+        f"Perhaps, you meant: **{origin_name_str}**?",
+        reply_markup=confirmation_kb,
+        parse_mode="Markdown",
+    )
+    return 
+        
+    
     
     popular_names = await get_popular_stations_from_db()
     
@@ -62,25 +95,116 @@ async def process_origin(message: types.Message, state: FSMContext):
         "Enter name of the arrival station (or select from popular):",
         reply_markup=get_popular_stations(popular_names)
     )
+    
+@router.callback_query(ConfirmationState.waiting_for_origin_confirmation)
+async def process_origin_confirmation(
+    callback: types.CallbackQuery, state: FSMContext
+):
+  action = callback.data
+  data = await state.get_data()
+
+  if action == "confirm_origin_yes":
+    origin_name_str = data.get("temp_origin_name")
+    origin_code = await get_station_code_by_name(origin_name_str)
+
+    await state.update_data(origin_name=origin_name_str, origin_code=origin_code)
+    await state.set_state(FormTracking.destination)
+
+    await callback.message.edit_text(
+        f"Departure station: **{origin_name_str}**", parse_mode="Markdown"
+    )
+
+    popular_names = await get_popular_stations_from_db()
+    await callback.message.answer(
+        "Enter name of the arrival station (or select from popular):",
+        reply_markup=get_popular_stations(popular_names),
+    )
+
+  elif action == "confirm_origin_no":
+    await state.set_state(FormTracking.origin)
+    await callback.message.edit_text(
+        "Okay, let's try again. Enter the departure station name:"
+    )
+
+  await callback.answer()
+  
+@router.callback_query(ConfirmationState.waiting_for_destination_confirmation)
+async def process_destination_confirmation(
+    callback: types.CallbackQuery, state: FSMContext
+):
+  action = callback.data
+  data = await state.get_data()
+
+  if action == "confirm_destination_yes":
+    destination_name_str = data.get("temp_destination_name")
+    destination_code = await get_station_code_by_name(destination_name_str)
+
+    await state.update_data(
+        destination_name=destination_name_str, destination_code=destination_code
+    )
+    await state.set_state(FormTracking.departure_date)
+
+    await callback.message.edit_text(
+        f"Arrival station: **{destination_name_str}**", parse_mode="Markdown"
+    )
+
+    await callback.message.answer(
+        'Enter departure date in "DD-MM-YYYY" format:',
+        reply_markup=get_quick_date(),
+    )
+
+  elif action == "confirm_destination_no":
+    await state.set_state(FormTracking.destination)
+    await callback.message.edit_text(
+        "Okay, let's try again. Enter the arrival station name:"
+    )
+
+  await callback.answer()
 
 @router.message(FormTracking.destination)
 async def process_destination(message: types.Message, state: FSMContext):
-    destination_name = message.text.strip()
-    stations = await fuzzy_search_station(destination_name)
-    if not stations:
-            await message.answer("Station that you looking for is not found. Try to enter it again or choose from the list")
-            return 
-    best_match = stations[0]
-    destination_name_str = str(best_match.name)
-    if destination_name.lower() != destination_name_str.lower():
-        await message.answer(f"Perhaps, you meant: **{destination_name_str}**?")
+  destination_name = message.text.strip()
+  stations = await fuzzy_search_station(destination_name)
+
+  if not stations:
+    await message.answer(
+        "Station that you looking for is not found. Try to enter it again or"
+        " choose from the list"
+    )
+    return
+
+  best_match = stations[0]
+  destination_name_str = str(best_match.name)
+  
+  if destination_name.lower() == destination_name_str.lower():
     destination_code = await get_station_code_by_name(destination_name_str)
-        
-    await state.update_data(destination_name=destination_name_str, destination_code=destination_code)
+    await state.update_data(
+        destination_name=destination_name_str, destination_code=destination_code
+    )
     await state.set_state(FormTracking.departure_date)
+
     await message.answer(
         'Enter departure date in "DD-MM-YYYY" format:',
-        reply_markup=get_quick_date()
+        reply_markup=get_quick_date(),
+    )
+
+  else:
+    await state.update_data(temp_destination_name=destination_name_str)
+    await state.set_state(ConfirmationState.waiting_for_destination_confirmation)
+
+    confirmation_kb = types.InlineKeyboardMarkup(inline_keyboard=[[
+        types.InlineKeyboardButton(
+            text="Yes, correct", callback_data="confirm_destination_yes"
+        ),
+        types.InlineKeyboardButton(
+            text="No, re-enter", callback_data="confirm_destination_no"
+        ),
+    ]])
+
+    await message.answer(
+        f"Perhaps, you meant: **{destination_name_str}**?",
+        reply_markup=confirmation_kb,
+        parse_mode="Markdown",
     )
 
 
