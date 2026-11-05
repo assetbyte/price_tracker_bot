@@ -1,0 +1,149 @@
+Date : 2026-11-05 09:37:00
+Directory : /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project
+Total : 80 files,  3285 codes, 193 comments, 846 blanks, all 4324 lines
+
+Languages
++------------------+------------+------------+------------+------------+------------+
+| language         | files      | code       | comment    | blank      | total      |
++------------------+------------+------------+------------+------------+------------+
+| Python           |         46 |      1,843 |        184 |        527 |      2,554 |
+| TypeScript       |         22 |        552 |          0 |        130 |        682 |
+| PostCSS          |          5 |        519 |          9 |        108 |        636 |
+| Ini              |          1 |        123 |          0 |         27 |        150 |
+| Markdown         |          2 |         95 |          0 |         38 |        133 |
+| pip requirements |          1 |         66 |          0 |          1 |         67 |
+| YAML             |          1 |         61 |          0 |          4 |         65 |
+| JavaScript       |          1 |         18 |          0 |          5 |         23 |
+| Docker           |          1 |          8 |          0 |          6 |         14 |
++------------------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                                            | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                                               |         80 |      3,285 |        193 |        846 |      4,324 |
+| . (Files)                                                                                                                                       |          5 |        276 |          0 |         43 |        319 |
+| alembic                                                                                                                                         |          7 |        181 |        112 |         76 |        369 |
+| alembic (Files)                                                                                                                                 |          1 |         46 |         28 |         29 |        103 |
+| alembic/versions                                                                                                                                |          6 |        135 |         84 |         47 |        266 |
+| app                                                                                                                                             |         23 |      1,287 |          8 |        329 |      1,624 |
+| app/bot                                                                                                                                         |          7 |        654 |          4 |        144 |        802 |
+| app/bot (Files)                                                                                                                                 |          1 |         33 |          0 |          7 |         40 |
+| app/bot/handlers                                                                                                                                |          5 |        569 |          4 |        131 |        704 |
+| app/bot/keyboards                                                                                                                               |          1 |         52 |          0 |          6 |         58 |
+| app/core                                                                                                                                        |          1 |         26 |          0 |          4 |         30 |
+| app/crud                                                                                                                                        |          4 |        179 |          0 |         33 |        212 |
+| app/db                                                                                                                                          |          3 |        119 |          0 |         32 |        151 |
+| app/scrapers                                                                                                                                    |          2 |        103 |          3 |         44 |        150 |
+| app/services                                                                                                                                    |          5 |        186 |          1 |         63 |        250 |
+| app/tasks                                                                                                                                       |          1 |         20 |          0 |          9 |         29 |
+| docs                                                                                                                                            |          1 |         59 |          0 |         14 |         73 |
+| web                                                                                                                                             |         44 |      1,482 |         73 |        384 |      1,939 |
+| web/backend                                                                                                                                     |         16 |        375 |         64 |        122 |        561 |
+| web/backend (Files)                                                                                                                             |          1 |         15 |          3 |          5 |         23 |
+| web/backend/api                                                                                                                                 |         10 |        241 |          4 |         65 |        310 |
+| web/backend/api (Files)                                                                                                                         |          9 |        241 |          4 |         64 |        309 |
+| web/backend/api/migrations                                                                                                                      |          1 |          0 |          0 |          1 |          1 |
+| web/backend/config                                                                                                                              |          5 |        119 |         57 |         52 |        228 |
+| web/frontend                                                                                                                                    |         28 |      1,107 |          9 |        262 |      1,378 |
+| web/frontend (Files)                                                                                                                            |          1 |         36 |          0 |         24 |         60 |
+| web/frontend/src                                                                                                                                |         27 |      1,071 |          9 |        238 |      1,318 |
+| web/frontend/src (Files)                                                                                                                        |          2 |         29 |          1 |          4 |         34 |
+| web/frontend/src/app                                                                                                                            |         22 |      1,009 |          8 |        233 |      1,250 |
+| web/frontend/src/app (Files)                                                                                                                    |          5 |         55 |          0 |         14 |         69 |
+| web/frontend/src/app/components                                                                                                                 |          9 |        777 |          8 |        165 |        950 |
+| web/frontend/src/app/components/dashboard                                                                                                       |          3 |        223 |          1 |         50 |        274 |
+| web/frontend/src/app/components/tracking-create                                                                                                 |          3 |        188 |          0 |         35 |        223 |
+| web/frontend/src/app/components/tracking-list                                                                                                   |          3 |        366 |          7 |         80 |        453 |
+| web/frontend/src/app/interceptors                                                                                                               |          2 |         26 |          0 |          6 |         32 |
+| web/frontend/src/app/services                                                                                                                   |          6 |        151 |          0 |         48 |        199 |
+| web/frontend/src/environments                                                                                                                   |          2 |          8 |          0 |          0 |          8 |
+| web/frontend/src/types                                                                                                                          |          1 |         25 |          0 |          1 |         26 |
++-------------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| filename                                                                                                                                        | language         | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/Dockerfile                                                              | Docker           |          8 |          0 |          6 |         14 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/alembic.ini                                                             | Ini              |        123 |          0 |         27 |        150 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/alembic/env.py                                                          | Python           |         46 |         28 |         29 |        103 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/alembic/versions/0b02ae8f12cd_initial_tables_users_trackings_price_.py  | Python           |         60 |         14 |          7 |         81 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/alembic/versions/1bfe4536d1b9_update_price_history_schema.py            | Python           |         13 |         14 |          8 |         35 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/alembic/versions/356c321e2170_add_stations_table.py                     | Python           |         23 |         14 |          8 |         45 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/alembic/versions/4cc7c9c128f1_add_last_notified_price_to_trackings.py   | Python           |         11 |         14 |          8 |         33 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/alembic/versions/5b79e389bd1c_drop_route_column_and_refresh_price_.py   | Python           |         17 |         14 |          8 |         39 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/alembic/versions/e694e0d902cd_remove_unique_constraint_from_station_.py | Python           |         11 |         14 |          8 |         33 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/bot/handlers/common.py                                              | Python           |         27 |          0 |          6 |         33 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/bot/handlers/delete.py                                              | Python           |         54 |          0 |         15 |         69 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/bot/handlers/start.py                                               | Python           |         21 |          0 |         10 |         31 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/bot/handlers/tracking.py                                            | Python           |        435 |          4 |         92 |        531 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/bot/handlers/view.py                                                | Python           |         32 |          0 |          8 |         40 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/bot/keyboards/tracking_kb.py                                        | Python           |         52 |          0 |          6 |         58 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/bot/main.py                                                         | Python           |         33 |          0 |          7 |         40 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/core/celery.py                                                      | Python           |         26 |          0 |          4 |         30 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/crud/add_price_record.py                                            | Python           |         27 |          0 |          3 |         30 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/crud/price_history.py                                               | Python           |         24 |          0 |          8 |         32 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/crud/tracking.py                                                    | Python           |        105 |          0 |         19 |        124 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/crud/users.py                                                       | Python           |         23 |          0 |          3 |         26 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/db/base.py                                                          | Python           |         95 |          0 |         22 |        117 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/db/redis.py                                                         | Python           |          6 |          0 |          1 |          7 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/db/session.py                                                       | Python           |         18 |          0 |          9 |         27 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/scrapers/ktzh_client.py                                             | Python           |         42 |          1 |         22 |         65 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/scrapers/ktzh_parser.py                                             | Python           |         61 |          2 |         22 |         85 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/services/cache_service.py                                           | Python           |         35 |          0 |         14 |         49 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/services/checker.py                                                 | Python           |        106 |          1 |         41 |        148 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/services/notifier.py                                                | Python           |         15 |          0 |          4 |         19 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/services/station_repository.py                                      | Python           |         15 |          0 |          2 |         17 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/services/stations.py                                                | Python           |         15 |          0 |          2 |         17 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/app/tasks/checker_tasks.py                                              | Python           |         20 |          0 |          9 |         29 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/debounce.js                                                             | JavaScript       |         18 |          0 |          5 |         23 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/docker-compose.yml                                                      | YAML             |         61 |          0 |          4 |         65 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/docs/db_schema.md                                                       | Markdown         |         59 |          0 |         14 |         73 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/requirements.txt                                                        | pip requirements |         66 |          0 |          1 |         67 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/backend/api/__init__.py                                             | Python           |          0 |          0 |          1 |          1 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/backend/api/admin.py                                                | Python           |          1 |          1 |          2 |          4 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/backend/api/apps.py                                                 | Python           |          3 |          0 |          3 |          6 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/backend/api/authentication.py                                       | Python           |         49 |          0 |         17 |         66 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/backend/api/migrations/__init__.py                                  | Python           |          0 |          0 |          1 |          1 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/backend/api/models.py                                               | Python           |          1 |          1 |          2 |          4 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/backend/api/serializers.py                                          | Python           |         33 |          0 |          4 |         37 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/backend/api/tests.py                                                | Python           |          1 |          1 |          2 |          4 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/backend/api/urls.py                                                 | Python           |         12 |          0 |          2 |         14 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/backend/api/views.py                                                | Python           |        141 |          1 |         31 |        173 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/backend/config/__init__.py                                          | Python           |          0 |          0 |          1 |          1 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/backend/config/asgi.py                                              | Python           |          4 |          8 |          5 |         17 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/backend/config/settings.py                                          | Python           |        105 |         25 |         38 |        168 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/backend/config/urls.py                                              | Python           |          6 |         16 |          3 |         25 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/backend/config/wsgi.py                                              | Python           |          4 |          8 |          5 |         17 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/backend/manage.py                                                   | Python           |         15 |          3 |          5 |         23 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/README.md                                                  | Markdown         |         36 |          0 |         24 |         60 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/app.config.ts                                      | TypeScript       |         14 |          0 |          2 |         16 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/app.css                                            | PostCSS          |          0 |          0 |          1 |          1 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/app.routes.ts                                      | TypeScript       |         10 |          0 |          5 |         15 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/app.spec.ts                                        | TypeScript       |         20 |          0 |          4 |         24 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/app.ts                                             | TypeScript       |         11 |          0 |          2 |         13 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/components/dashboard/dashboard.css                 | PostCSS          |        101 |          1 |         24 |        126 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/components/dashboard/dashboard.spec.ts             | TypeScript       |         18 |          0 |          6 |         24 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/components/dashboard/dashboard.ts                  | TypeScript       |        104 |          0 |         20 |        124 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/components/tracking-create/tracking-create.css     | PostCSS          |         98 |          0 |         19 |        117 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/components/tracking-create/tracking-create.spec.ts | TypeScript       |         18 |          0 |          6 |         24 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/components/tracking-create/tracking-create.ts      | TypeScript       |         72 |          0 |         10 |         82 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/components/tracking-list/tracking-list.css         | PostCSS          |        296 |          7 |         62 |        365 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/components/tracking-list/tracking-list.spec.ts     | TypeScript       |         18 |          0 |          6 |         24 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/components/tracking-list/tracking-list.ts          | TypeScript       |         52 |          0 |         12 |         64 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/interceptors/telegram-auth.interceptor.ts          | TypeScript       |         13 |          0 |          4 |         17 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/interceptors/tunnel-bypass.interceptor.ts          | TypeScript       |         13 |          0 |          2 |         15 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/services/stations.spec.ts                          | TypeScript       |         12 |          0 |          5 |         17 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/services/stations.ts                               | TypeScript       |         22 |          0 |          6 |         28 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/services/telegram.spec.ts                          | TypeScript       |         12 |          0 |          5 |         17 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/services/telegram.ts                               | TypeScript       |         36 |          0 |          9 |         45 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/services/tracking.spec.ts                          | TypeScript       |         12 |          0 |          5 |         17 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/app/services/tracking.ts                               | TypeScript       |         57 |          0 |         18 |         75 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/environments/environment.prod.ts                       | TypeScript       |          4 |          0 |          0 |          4 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/environments/environment.ts                            | TypeScript       |          4 |          0 |          0 |          4 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/main.ts                                                | TypeScript       |          5 |          0 |          2 |          7 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/styles.css                                             | PostCSS          |         24 |          1 |          2 |         27 |
+| /Users/setbdirahman/Desktop/road_to_1st_offer/price_tracker_bot_project/web/frontend/src/types/telegram.d.ts                                    | TypeScript       |         25 |          0 |          1 |         26 |
+| Total                                                                                                                                           |                  |      3,285 |        193 |        846 |      4,324 |
++-------------------------------------------------------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+
